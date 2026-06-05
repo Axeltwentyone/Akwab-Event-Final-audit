@@ -29,7 +29,7 @@ class RegisterRequest extends FormRequest
             'prenoms'      => 'required|string|max:255',
             'email'        => 'required|email|unique:utilisateurs,email',
             'telephone'    => 'required|string|max:20',
-            'mot_de_passe' => ['required', 'string', 'min:8', 'confirmed', \Illuminate\Validation\Rules\Password::defaults()],
+            'mot_de_passe' => ['required', 'confirmed', \Illuminate\Validation\Rules\Password::defaults()],
         ];
     }
     protected function failedValidation(Validator $validator)
