@@ -18,8 +18,8 @@ class RoleFactory extends Factory
     public function definition(): array
     {
         return [
-            'libelle' => fake()->unique()->randomElement(['Administrateur', 'Utilisateur']),
-            
+            'libelle' => fake()->randomElement(['Administrateur', 'Utilisateur']),
+
         ];
     }
 }

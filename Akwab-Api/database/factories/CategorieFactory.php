@@ -18,15 +18,15 @@ class CategorieFactory extends Factory
     public function definition(): array
     {
         return [
-            'libelle' => fake()->unique()->randomElement([
+            'libelle' => fake()->randomElement([
                 'Musique',
                 'Sport',
                 'Art',
                 'Technologie',
                 'Cuisine'
-                ]),
+            ]),
 
-            'image' => null,
+            'image'           => $this->faker->imageUrl(),
         ];
     }
 }

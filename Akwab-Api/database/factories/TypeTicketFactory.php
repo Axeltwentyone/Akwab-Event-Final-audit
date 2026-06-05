@@ -15,13 +15,18 @@ class TypeTicketFactory extends Factory
      *
      * @return array<string, mixed>
      */
+
+    protected $model = Type_ticket::class;
+
     public function definition(): array
     {
         return [
-            'libelle' => $this->faker->unique()->randomElement([
+            'libelle' => $this->faker->randomElement([
                 'VIP',
                 'GRAND PUBLIC',
             ]),
+            'prix' => $this->faker->numberBetween(1000, 10000),
+            'quantite_type_ticket' => $this->faker->numberBetween(50, 200),
         ];
     }
 }
