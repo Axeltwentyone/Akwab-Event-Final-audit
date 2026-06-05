@@ -15,6 +15,7 @@ class TypeTicketResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id_type_ticket' => $this->id_type_ticket,
             'libelle' => $this->libelle,
             'prix' => $this->prix,
             'quantite_type_ticket' => $this->quantite_type_ticket
