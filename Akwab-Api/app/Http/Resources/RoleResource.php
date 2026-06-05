@@ -16,6 +16,7 @@ class RoleResource extends JsonResource
     {
         return [
             'id_role' => $this->id_role,
+            
             'libelle' => $this->libelle
         ];
     }
