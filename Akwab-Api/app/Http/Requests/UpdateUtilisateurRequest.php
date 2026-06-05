@@ -22,12 +22,12 @@ class UpdateUtilisateurRequest extends FormRequest
      */
     public function rules(): array
     {
-          return [
+        return [
             'nom'          => 'sometimes|string|max:255',
             'prenoms'      => 'sometimes|string|max:255',
-            'email'        => 'sometimes|email|max:255|unique:utilisateurs,email,' . $this->utilisateur . ',id_utilisateurs',
+            'email'        => 'sometimes|email|unique:utilisateurs,email,' . $this->utilisateur . ',id_utilisateurs',
             'telephone'    => 'sometimes|string|max:20',
-            'mot_de_passe' => 'sometimes|string|min:8|confirmed',
+            'mot_de_passe' => ['sometimes', 'confirmed', \Illuminate\Validation\Rules\Password::defaults()],
             'id_role'      => 'sometimes|exists:roles,id_role',
         ];
     }
