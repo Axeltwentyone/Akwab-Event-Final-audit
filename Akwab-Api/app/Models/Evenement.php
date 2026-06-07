@@ -20,6 +20,9 @@ class Evenement extends Model
         'image',
         'quantite_ticket_totale',
         'quantite_ticket_restante',
+        'id_categorie',
+        'id_lieu',
+        'id_organisateur',
     ];
 
     public function categories()
@@ -44,7 +47,7 @@ class Evenement extends Model
 
     public function utilisateursAiment()
     {
-        return $this->belongsToMany(Utilisateur::class, 'aimer', 'id_evenement', 'id_utilisateur');
+        return $this->belongsToMany(Utilisateur::class, 'utilisateur_evenement', 'id_evenement', 'id_utilisateur');
     }
 
 }

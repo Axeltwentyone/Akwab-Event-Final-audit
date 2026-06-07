@@ -17,7 +17,9 @@ class CategorieResource extends JsonResource
         return [
             'id'      => $this->id_categorie,
             'libelle' => $this->libelle,
-            'image'   => $this->image,
+            'image'   => $this->image
+            ? asset('storage/' . $this->image)
+            : null,
         ];
     }
 }
