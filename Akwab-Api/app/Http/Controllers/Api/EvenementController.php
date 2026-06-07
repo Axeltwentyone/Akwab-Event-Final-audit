@@ -23,7 +23,7 @@ class EvenementController extends Controller
     {
         $page = $request->input('page', 1);
         $evenements = Cache::remember("evenements.tous.page.{$page}", 3600, function () {
-            return Evenement::with(['categorie', 'lieu', 'organisateur'])
+            return Evenement::with(['categories', 'lieux', 'organisateurs'])
                 ->withCount('utilisateursAiment')
                 ->orderBy('created_at', 'desc')
                 ->paginate(10);
@@ -65,9 +65,9 @@ class EvenementController extends Controller
     public function show(string $id)
     {
         $evenement = Cache::remember("evenement.{$id}", 3600, function () use ($id) {
-            return Evenement::with(['categorie', 'lieu', 'organisateur'])
-                ->findOrFail($id)
-                ->withCount('utilisateursAiment');
+            return Evenement::with(['categories', 'lieux', 'organisateurs'])
+                ->withCount('utilisateursAiment')
+                ->findOrFail($id);
         });
 
         return new EvenementResource($evenement);

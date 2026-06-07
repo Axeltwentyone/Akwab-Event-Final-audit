@@ -19,34 +19,30 @@ class EvenementResource extends JsonResource
             'nom'  => $this->nom,
             'date'  => $this->date,
             'description'  => $this->description,
-            'image'  => $this->image,
+            'image'  => $this->image
+                ? asset('storage/' . $this->image)
+                : null,
             'quantite_ticket_totale'  => $this->quantite_ticket_totale,
             'quantite_ticket_restante'  => $this->quantite_ticket_restante,
 
-            'categorie'  => $this->categorie->map(function ($categorie) {
-                return [
-                    'id_categorie' => $categorie->id_categorie,
-                    'libelle' => $categorie->libelle
-                ];
-            }),
+            'categories' => $this->categories ? [
+                'id_categorie' => $this->categories->id_categorie,
+                'libelle' => $this->categories->libelle,
+            ] : null,
 
-            'lieu'  => $this->lieu->map(function ($lieu) {
-                return [
-                    'id_lieu' => $lieu->id_lieu,
-                    'nom' => $lieu->nom,
-                    'ville' => $lieu->ville,
-                    'adresse' => $lieu->adresse,
-                ];
-            }),
 
-            'organisateur'  => $this->organisateur->map(function ($organisateur) {
-                return [
-                    'id_organisateur' => $organisateur->id_organisateur,
-                    'nom' => $organisateur->nom,
-                    'email' => $organisateur->email,
-                    'adresse' => $organisateur->adresse,
-                ];
-            }),
+            'lieux' => $this->lieux ? [
+                'id_lieu' => $this->lieux->id_lieu,
+                'nom' => $this->lieux->nom,
+                'ville' => $this->lieux->ville,
+                'adresse' => $this->lieux->adresse,
+            ] : null,
+
+            'organisateurs' => $this->organisateurs ? [
+                'id_organisateur' => $this->organisateurs->id_organisateur,
+                'nom' => $this->organisateurs->nom,
+                'email' => $this->organisateurs->email,
+            ] : null,
 
             'likes_count'  => $this->whenCounted('utilisateursAiment')
 
