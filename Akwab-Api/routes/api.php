@@ -1,26 +1,25 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\OrganisateurController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
-
 // ROUTES PUBLIQUES
-Route::get('/organisateurs', [OrganisateurController::class, 'index' ]);
-Route::get('/organisateurs/{id} ', [OrganisateurController::class, 'show' ]);
-
-
-// ROUTES PROTEGEES (UTILISATEURS CONNECTES)
-Route::middleware('auth:sanctum')->group(function() {
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/register/organisateur', [AuthController::class, 'registerOrganisateur']);
+Route::post('/register/admin', [AuthController::class, 'registerAdmin']);
+Route::post('/login', [AuthController::class, 'login']);
 
 
 
-    // ROUTES ADMIN
-    Route::middleware('admin')->group(function() {
-        Route::apiResource('/organisateurs', OrganisateurController::class)->except(['index', 'show']);
+// ROUTES PROTÉGÉES(utilisateurs connectés)
+Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
 
 
+
+// ROUTES ADMIN
+    Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+        Route::apiResource('organisateurs', OrganisateurController::class);
     });
-
-
-} );
