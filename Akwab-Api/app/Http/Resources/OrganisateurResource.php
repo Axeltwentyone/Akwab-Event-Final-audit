@@ -19,7 +19,6 @@ class OrganisateurResource extends JsonResource
             'nom' => $this->nom,
             'description' => $this->description,
             'email' => $this->email,
-            'adresse' => $this->adresse,
         ];
     }
 }
