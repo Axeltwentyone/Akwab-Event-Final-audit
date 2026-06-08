@@ -1,7 +1,7 @@
 <?php
 
 
-use App\Http\Controllers\Api\AuthController;
+
 use App\Http\Controllers\Api\EvenementController;
 use App\Http\Controllers\Api\OrganisateurController;
 use Illuminate\Http\Request;
@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\CategorieController;
 use App\Http\Controllers\Api\TypeTicketController;
 use Database\Factories\TypeTicketFactory;
+use App\Http\Controllers\Api\AuthController;
 
 // ROUTES PUBLIQUES
 Route::post('/register', [AuthController::class, 'register']);
