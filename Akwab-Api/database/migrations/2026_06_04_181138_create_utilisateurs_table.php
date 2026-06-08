@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('telephone');
             $table->string('mot_de_passe');
-            
+
             $table->unsignedBigInteger('id_role');
             $table->foreign('id_role')
                 ->references('id_role')
