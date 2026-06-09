@@ -12,6 +12,8 @@ use Database\Factories\TypeTicketFactory;
 use App\Http\Controllers\Api\UtilisateurController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\TicketController;
+use App\Http\Controllers\Api\LieuController;
+
 
 // ROUTES PUBLIQUES
 Route::post('/register', [AuthController::class, 'register']);
@@ -24,6 +26,9 @@ Route::get('/evenements/{id}', [EvenementController::class, 'show']);
 
 Route::get('/types-tickets', [TypeTicketController::class, 'index']);
 Route::get('/types-tickets/{id}', [TypeTicketController::class, 'show']);
+
+Route::get('/lieux', [LieuController::class, 'index']);
+Route::get('/lieux/{id}', [LieuController::class, 'show']);
 
 
 
@@ -48,5 +53,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/tickets', [TicketController::class, 'index']);
         Route::put('/tickets/{id}', [TicketController::class, 'update']);
         Route::delete('/tickets/{id}', [TicketController::class, 'destroy']);
+        Route::apiResource('lieux', LieuController::class);
     });
 });
