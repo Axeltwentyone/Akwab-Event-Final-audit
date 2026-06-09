@@ -29,15 +29,18 @@ class StoreEvenementRequest extends FormRequest
             'date'                     => 'required|date',
             'description'              => 'required|string',
             'image'                    => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'quantite_ticket_totale' => 'required|integer|min:0',
-            'quantite_ticket_restante' => 'required|integer|min:0',
             'id_categorie'             => 'required|exists:categories,id_categorie',
             'id_lieu'             => 'required|exists:lieux,id_lieu',
             'id_organisateur'             => 'required|exists:organisateurs,id_organisateur',
+
+            'types_tickets'   => 'required|array|size:2',
+            'types_tickets.*.id_type_ticket'   => 'required|exists:type_tickets,id_type_ticket',
+            'types_tickets.*.total_ticket_evenement' => 'required|integer|min:1',
+            'types_tickets.*.quantite_type_ticket'  => 'required|integer|min:1',
         ];
     }
 
-    
+
     protected function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(response()->json([

@@ -22,8 +22,6 @@ class EvenementResource extends JsonResource
             'image'  => $this->image
                 ? asset('storage/' . $this->image)
                 : null,
-            'quantite_ticket_totale'  => $this->quantite_ticket_totale,
-            'quantite_ticket_restante'  => $this->quantite_ticket_restante,
 
             'categories' => $this->categories ? [
                 'id_categorie' => $this->categories->id_categorie,
@@ -43,6 +41,10 @@ class EvenementResource extends JsonResource
                 'nom' => $this->organisateurs->nom,
                 'email' => $this->organisateurs->email,
             ] : null,
+
+            'types_tickets' => TypeTicketResource::collection(
+                $this->whenLoaded('types_tickets')
+            ),
 
             'likes_count'  => $this->whenCounted('utilisateursAiment')
 

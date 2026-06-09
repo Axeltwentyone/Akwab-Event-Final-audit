@@ -32,7 +32,30 @@ class DatabaseSeeder extends Seeder
         Type_ticket::factory(10)->create();
         $this->call(SuperAdminSeeder::class);
         Utilisateur::factory(10)->create();
-        Evenement::factory(10)->create();
+
+        $evenements = Evenement::factory(10)->create();
+
+        $typesTickets = Type_ticket::all();
+        $quantites = [
+            'VIP' => fake()->numberBetween(50, 500),
+            'Standard' => fake()->numberBetween(200, 1000),
+        ];
+        $totalEvenement = array_sum($quantites);
+        foreach ($evenements as $evenement) {
+            foreach ($typesTickets as $type) {
+                $quantite = $quantites[$type->libelle] ?? 100;
+
+                $evenement->types_tickets()->attach(
+                    $type->id_type_ticket,
+                    [
+                        'total_ticket_evenement'   => $totalEvenement,
+                        'quantite_ticket_restante' => $quantite,
+                        'quantite_type_ticket'     => $quantite,
+                    ]
+                );
+            }
+        }
+
         Ticket::factory(10)->create();
     }
 }

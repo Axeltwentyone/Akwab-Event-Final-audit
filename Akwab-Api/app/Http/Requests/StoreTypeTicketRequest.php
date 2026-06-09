@@ -26,8 +26,7 @@ class StoreTypeTicketRequest extends FormRequest
     {
         return [
             'libelle'  => 'required|string|max:255',
-            'prix'  => 'required|numeric|min:0',
-            'quantite_type_ticket'  => 'required|integer|min:0'
+            'prix_ticket'  => 'required|numeric|min:0',
         ];
     }
 

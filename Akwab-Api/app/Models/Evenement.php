@@ -19,8 +19,6 @@ class Evenement extends Model
         'date',
         'description',
         'image',
-        'quantite_ticket_totale',
-        'quantite_ticket_restante',
         'id_categorie',
         'id_lieu',
         'id_organisateur',
@@ -49,5 +47,16 @@ class Evenement extends Model
     public function utilisateursAiment()
     {
         return $this->belongsToMany(Utilisateur::class, 'utilisateur_evenement', 'id_evenement', 'id_utilisateur');
+    }
+
+    public function types_tickets()
+    {
+        return $this->belongsToMany(Type_ticket::class, 'evenement_type_ticket',  'id_type_ticket', 'id_evenement')
+            ->withPivot([
+                'total_ticket_evenement',
+                'quantite_ticket_restante',
+                'quantite_type_ticket'
+            ])
+            ->withTimestamps();
     }
 }
