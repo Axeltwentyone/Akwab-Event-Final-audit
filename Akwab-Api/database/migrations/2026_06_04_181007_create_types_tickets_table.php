@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('types_tickets', function (Blueprint $table) {
             $table->id('id_type_ticket');
             $table->string('libelle');
-            $table->decimal('prix', 10, 2);
-            $table->integer('quantite_type_ticket');
+            $table->decimal('prix_ticket', 10, 2);
             $table->timestamps();
         });
     }

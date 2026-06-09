@@ -26,7 +26,7 @@ class TicketFactory extends Factory
 
         return [
             'numero_ticket' => $this->faker->unique()->numberBetween(1, 10000),
-            'prix_total'  => $typeTicket->prix * $nombreTickets,
+            'prix_total'  => $typeTicket->prix_ticket * $nombreTickets,
             'date_reservation'   => now()->format('Y-m-d'),
             'nombre_ticket_pris' => $nombreTickets,
             'id_evenement' => Evenement::inRandomOrder()->first()->id_evenement,

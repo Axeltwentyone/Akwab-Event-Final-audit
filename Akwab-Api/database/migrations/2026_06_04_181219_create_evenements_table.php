@@ -17,8 +17,6 @@ return new class extends Migration
             $table->date('date');
             $table->text('description');
             $table->string('image');
-            $table->integer('quantite_ticket_totale');
-            $table->integer('quantite_ticket_restante');
 
             $table->unsignedBigInteger('id_categorie');
             $table->foreign('id_categorie')

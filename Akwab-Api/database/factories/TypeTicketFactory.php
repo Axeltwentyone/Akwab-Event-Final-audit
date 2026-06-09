@@ -25,8 +25,7 @@ class TypeTicketFactory extends Factory
                 'VIP',
                 'GRAND PUBLIC',
             ]),
-            'prix' => $this->faker->numberBetween(1000, 10000),
-            'quantite_type_ticket' => $this->faker->numberBetween(50, 200),
+            'prix_ticket' => $this->faker->numberBetween(1000, 10000),
         ];
     }
 }

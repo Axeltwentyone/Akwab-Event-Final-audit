@@ -26,8 +26,7 @@ class UpdateTypeTicketRequest extends FormRequest
     {
         return [
             'libelle'  => 'sometimes|string|max:255',
-            'prix'  => 'sometimes|numeric|min:0',
-            'quantite_type_ticket'  => 'sometimes|integer|min:0'
+            'prix_ticket'  => 'sometimes|numeric|min:0',
         ];
     }
 
