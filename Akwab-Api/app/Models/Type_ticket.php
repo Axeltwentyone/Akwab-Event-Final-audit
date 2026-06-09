@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Type_ticket extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected static function newFactory()
     {
@@ -21,12 +21,22 @@ class Type_ticket extends Model
 
     protected $fillable = [
         'libelle',
-        'prix',
-        'quantite_type_ticket'
+        'prix_ticket',
     ];
 
     public function tickets()
     {
         return $this->hasMany(Ticket::class, 'id_type_ticket');
+    }
+
+    public function evenements()
+    {
+        return $this->belongsToMany(Evenement::class, 'evenement_type_ticket', 'id_evenement', 'id_type_ticket')
+            ->withPivot([
+                'total_ticket_evenement',
+                'quantite_ticket_restante',
+                'quantite_type_ticket'
+            ])
+            ->withTimestamps();
     }
 }
