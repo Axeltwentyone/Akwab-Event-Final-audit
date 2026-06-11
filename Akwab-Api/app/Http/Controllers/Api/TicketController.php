@@ -9,6 +9,8 @@ use App\Http\Requests\UpdateTicketRequest;
 use App\Http\Resources\TicketResource;
 use App\Models\Ticket;
 use App\Models\Type_ticket;
+use App\Models\Evenement;
+
 
 class TicketController extends Controller
 {
@@ -40,17 +42,44 @@ class TicketController extends Controller
      */
     public function store(StoreTicketRequest $request)
     {
-        $prixTotal  = 0;
+        $prixTotal   = 0;
         $nombreTotal = 0;
 
+        $evenement = Evenement::find($request->id_evenement);
+
+        if (!$evenement) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Événement non trouvé',
+            ], 404);
+        }
+
         foreach ($request->tickets as $item) {
-            $typeTicket   = Type_ticket::find($item['id_type_ticket']);
-            $prixTotal   += $item['nombre_ticket_pris'] * $typeTicket->prix;
+            $typeTicket = $evenement->typeTickets()
+                ->where('types_tickets.id_type_ticket', $item['id_type_ticket'])
+                ->first();
+
+            if (!$typeTicket) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Ce type de ticket n\'est pas disponible pour cet événement',
+                ], 400);
+            }
+
+            if ($typeTicket->pivot->quantite_ticket_restante < $item['nombre_ticket_pris']) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Stock insuffisant pour le type : ' . $typeTicket->libelle,
+                ], 400);
+            }
+
+            $prixTotal   += $item['nombre_ticket_pris'] * $typeTicket->prix_ticket;
             $nombreTotal += $item['nombre_ticket_pris'];
         }
 
+
         $ticket = Ticket::create([
-            'id_utilisateur'    => $request->user()->id_utilisateur,
+            'id_utilisateur'     => $request->user()->id_utilisateur,
             'id_evenement'       => $request->id_evenement,
             'id_type_ticket'     => $request->tickets[0]['id_type_ticket'],
             'numero_ticket'      => 'TK-N°' . strtoupper(uniqid()),
@@ -58,6 +87,20 @@ class TicketController extends Controller
             'nombre_ticket_pris' => $nombreTotal,
             'prix_total'         => $prixTotal,
         ]);
+
+
+        foreach ($request->tickets as $item) {
+            $typeTicket = $evenement->typeTickets()
+                ->where('types_tickets.id_type_ticket', $item['id_type_ticket'])
+                ->first();
+
+            $evenement->typeTickets()->updateExistingPivot(
+                $item['id_type_ticket'],
+                [
+                    'quantite_ticket_restante' => $typeTicket->pivot->quantite_ticket_restante - $item['nombre_ticket_pris'],
+                ]
+            );
+        }
 
         return response()->json([
             'success' => true,
@@ -99,7 +142,6 @@ class TicketController extends Controller
             ], 404);
         }
 
-        // Recalculer si les tickets changent
         if ($request->has('tickets')) {
             $prixTotal   = 0;
             $nombreTotal = 0;
