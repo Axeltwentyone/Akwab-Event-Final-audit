@@ -13,7 +13,7 @@ function AdminLayout() {
   return (
     <div className="flex min-h-screen bg-[#F0ECF1]">
       {/* Sidebar */}
-      <aside className="w-40 bg-teal-400 flex flex-col items-center py-8 gap-8 fixed h-full">
+      <aside className="w-40 bg-[#05CDC2] flex flex-col items-center py-8 gap-8 fixed h-full">
         <img src={logo} alt="Akwab Event" className="w-16" />
 
         <nav className="flex flex-col items-center gap-6 w-full mt-4">

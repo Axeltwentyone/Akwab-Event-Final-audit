@@ -7,6 +7,9 @@ import ForgotPassword from "./Authentification/ForgotPassword";
 import UtilisateurLayout from "./Utilisateurs/UtilisateurLayout";
 import AdminLayout from "./Admin/adminLayout";
 import Dashboard from "./Admin/dashboard";
+import ListUtilisateur from "./Admin/utilisateurs/ListUtilisateur";
+import UpdateUtilisateur from "./Admin/Utilisateurs/UpdateUtilisateur";
+import ShowUtilisateur from "./Admin/Utilisateurs/ShowUtilisateur";
 
 function App() {
   return (
@@ -19,10 +22,15 @@ function App() {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/register" element={<Register />} />
         <Route path="/header" element={<UtilisateurLayout />} />
-
+        <Route
+          path="utilisateurs/:id/modifier"
+          element={<UpdateUtilisateur />}
+        />
         {/* admin */}
         <Route path="/dashboard" element={<AdminLayout />}>
           <Route index element={<Dashboard />} />
+          <Route path="utilisateurs" element={<ListUtilisateur />} />
+          <Route path="utilisateurs/:id" element={<ShowUtilisateur />} />
         </Route>
       </Routes>
     </BrowserRouter>
