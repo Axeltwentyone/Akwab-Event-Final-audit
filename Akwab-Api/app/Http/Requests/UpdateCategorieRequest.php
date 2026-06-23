@@ -23,7 +23,7 @@ class UpdateCategorieRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'libelle' => 'sometimes|string|max:255|unique:categories,libelle,' . $this->categorie . ',id_categorie',
+            'libelle' => 'sometimes|string|max:255|unique:categories,libelle,' . $this->route('id') . ',id_categorie',
             'image'   => 'sometimes|string|max:255',
         ];
     }

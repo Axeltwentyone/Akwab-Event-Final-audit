@@ -69,7 +69,7 @@ export default function UpdateOrganisateur() {
 
       if (data.data?.id_organisateur || data.id_organisateur) {
         setSuccess("Organisateur mis à jour avec succès.");
-        setTimeout(() => navigate(`/dashboard/organisateurs/${id}`), 1200);
+        setTimeout(() => navigate(`/admin/organisateurs/${id}`), 1200);
       } else if (data.errors) {
         setFieldErrors(data.errors);
       } else {
@@ -94,7 +94,7 @@ export default function UpdateOrganisateur() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-3">
         <button
-          onClick={() => navigate(`/dashboard/organisateurs/${id}`)}
+          onClick={() => navigate(`/admin/organisateurs/${id}`)}
           className="text-gray-400 hover:text-purple-500 transition-colors"
         >
           ←
@@ -162,7 +162,7 @@ export default function UpdateOrganisateur() {
           <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-end gap-3 bg-gray-50">
             <button
               type="button"
-              onClick={() => navigate(`/dashboard/organisateurs/${id}`)}
+              onClick={() => navigate(`/admin/organisateurs/${id}`)}
               className="px-4 py-2 text-sm text-gray-500 hover:text-gray-700 font-medium transition-colors"
             >
               Annuler

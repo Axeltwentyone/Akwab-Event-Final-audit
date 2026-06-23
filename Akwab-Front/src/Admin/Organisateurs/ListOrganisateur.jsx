@@ -63,7 +63,7 @@ export default function ListOrganisateur() {
           Liste des organisateurs
         </h1>
         <button
-          onClick={() => navigate("/dashboard/organisateurs/creer")}
+          onClick={() => navigate("/admin/organisateurs/creer")}
           className="px-4 py-2 bg-purple-600 text-white text-sm font-semibold rounded-lg hover:bg-purple-700 transition-colors"
         >
           + Nouvel organisateur
@@ -109,7 +109,7 @@ export default function ListOrganisateur() {
                       <button
                         onClick={() =>
                           navigate(
-                            `/dashboard/organisateurs/${o.id_organisateur}`,
+                            `/admin/organisateurs/${o.id_organisateur}`,
                           )
                         }
                         className="text-teal-500 font-semibold hover:underline text-xs"
@@ -120,7 +120,7 @@ export default function ListOrganisateur() {
                       <button
                         onClick={() =>
                           navigate(
-                            `/dashboard/organisateurs/${o.id_organisateur}/modifier`,
+                            `/admin/organisateurs/${o.id_organisateur}/modifier`,
                           )
                         }
                         className="text-purple-500 font-semibold hover:underline text-xs"

@@ -13,18 +13,40 @@ use App\Models\Type_ticket;
 use App\Models\Evenement;
 use Illuminate\Support\Facades\Mail;
 
+
 class TicketController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $tickets = Ticket::all();
+        $query = Ticket::with([
+            'utilisateur',
+            'typeTicket',
+            'evenement'
+        ]);
+
+        // Filtre par événement
+        if ($request->id_evenement) {
+            $query->where('id_evenement', $request->id_evenement);
+        }
+
+        // Gains totaux AVANT pagination
+        $gains_total = (clone $query)->sum('prix_total');
+
+        // Pagination
+        $tickets = $query->paginate(10);
 
         return response()->json([
-            'success' => true,
-            'data'    => TicketResource::collection($tickets),
+            'success'     => true,
+            'data'        => TicketResource::collection($tickets),
+            'gains_total' => (float) $gains_total,
+            'meta'        => [
+                'current_page' => $tickets->currentPage(),
+                'last_page'    => $tickets->lastPage(),
+                'total'        => $tickets->total(),
+            ],
         ]);
     }
 
@@ -93,7 +115,7 @@ class TicketController extends Controller
 
         ]);
 
-        $ticket->load(['evenements', 'typeTicket']);
+        $ticket->load(['evenement', 'typeTicket']);
 
         $user = $request->user();
 
@@ -126,11 +148,12 @@ class TicketController extends Controller
     public function show(string $id)
     {
         $ticket = Ticket::with([
-            'evenements.lieux',
-            'evenements.organisateurs',
-            'typeTicket'
-        ])
-            ->find($id);
+            'evenement.lieux',
+            'evenement.organisateurs',
+            'utilisateur',
+            'typeTicket',
+            'evenement'
+        ])->find($id);
 
         if (!$ticket) {
             return response()->json([

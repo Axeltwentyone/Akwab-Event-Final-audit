@@ -24,12 +24,12 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/evenements', [EvenementController::class, 'index']);
 Route::get('/evenements/{id}', [EvenementController::class, 'show']);
-
 Route::get('/types-tickets', [TypeTicketController::class, 'index']);
 Route::get('/types-tickets/{id}', [TypeTicketController::class, 'show']);
-
 Route::get('/lieux', [LieuController::class, 'index']);
 Route::get('/lieux/{id}', [LieuController::class, 'show']);
+Route::get('/categories', [CategorieController::class, 'index']);
+Route::get('/categories/{id}', [CategorieController::class, 'show']);
 
 Route::get('/categories', [CategorieController::class, 'index']);
 Route::get('/categories/{id}', [CategorieController::class, 'show']);
@@ -52,17 +52,21 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/evenements/{id}/aimer', [AimerController::class, 'toggle']);
     Route::get('/mes-evenements-aimes', [AimerController::class, 'mesEvenementsAimes']);
 
-
-    // ROUTES ADMIN
-    Route::middleware(['admin'])->group(function () {
+    // ROUTES ADMIN SEULEMENT
+    Route::middleware('admin')->group(function () {
         Route::apiResource('/organisateurs', OrganisateurController::class);
         Route::apiResource('/evenements', EvenementController::class)->except(['index', 'show']);
         Route::apiResource('/types-tickets', TypeTicketController::class)->except(['index', 'show']);
         Route::apiResource('utilisateurs', UtilisateurController::class)->except(['store']);
+        Route::apiResource('lieux', LieuController::class)->except(['index', 'show']);
+        Route::get('/likes', [AimerController::class, 'index']);
         Route::get('/tickets', [TicketController::class, 'index']);
         Route::put('/tickets/{id}', [TicketController::class, 'update']);
         Route::delete('/tickets/{id}', [TicketController::class, 'destroy']);
-        Route::apiResource('lieux', LieuController::class);
-        Route::get('/likes', [AimerController::class, 'index']);
+
+      
+        Route::post('/categories', [CategorieController::class, 'store']);
+        Route::put('/categories/{id}', [CategorieController::class, 'update']);
+        Route::delete('/categories/{id}', [CategorieController::class, 'destroy']);
     });
 });

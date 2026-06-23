@@ -98,7 +98,7 @@ export default function ListUtilisateur() {
                     <div className="flex items-center justify-center gap-2">
                       <button
                         onClick={() =>
-                          navigate(`/dashboard/utilisateurs/${u.id}`)
+                          navigate(`/admin/utilisateurs/${u.id}`)
                         }
                         className="text-teal-500 font-semibold hover:underline text-xs"
                       >
