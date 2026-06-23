@@ -49,7 +49,7 @@ export default function ShowLieux() {
       });
       const data = await res.json();
       if (data.success || res.ok) {
-        navigate("/dashboard/lieux");
+        navigate("/admin/lieux");
       } else {
         alert(data.message ?? "Erreur lors de la suppression.");
         setDeleting(false);
@@ -74,7 +74,7 @@ export default function ShowLieux() {
           {error}
         </div>
         <button
-          onClick={() => navigate("/dashboard/lieux")}
+          onClick={() => navigate("/admin/lieux")}
           className="text-sm text-gray-400 hover:text-purple-500 transition-colors"
         >
           ← Retour à la liste
@@ -87,7 +87,7 @@ export default function ShowLieux() {
       <div className="w-full max-w-xl flex flex-col gap-6">
         <div className="flex items-center gap-3 self-start sm:self-center sm:w-full">
           <button
-            onClick={() => navigate("/dashboard/lieux")}
+            onClick={() => navigate("/admin/lieux")}
             className="text-gray-400 hover:text-purple-500 transition-colors flex-shrink-0"
           >
             ←
@@ -127,7 +127,7 @@ export default function ShowLieux() {
                 <p className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-1">
                   Adresse
                 </p>
-                <p className="text-sm text-gray-700 break-words">
+                <p className="text-sm text-gray-700 wrap-break-words">
                   {lieu.adresse}
                 </p>
               </div>
@@ -135,7 +135,7 @@ export default function ShowLieux() {
 
             <div className="flex flex-col sm:flex-row gap-2 pt-4 border-t border-gray-100 mt-2 w-full">
               <button
-                onClick={() => navigate(`/dashboard/lieux/${id}/edit`)}
+                onClick={() => navigate(`/admin/lieux/${id}/edit`)}
                 className="flex-1 text-sm py-2.5 border border-purple-200 rounded-lg text-purple-600 hover:bg-purple-50 font-medium transition-colors"
               >
                 Modifier

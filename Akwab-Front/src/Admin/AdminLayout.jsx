@@ -12,19 +12,19 @@ function AdminLayout() {
 
   return (
     <div className="flex min-h-screen bg-[#F0ECF1]">
-      {/* Sidebar */}
+
       <aside className="w-40 bg-[#05CDC2] flex flex-col items-center py-8 gap-8 fixed h-full">
         <img src={logo} alt="Akwab Event" className="w-16" />
 
         <nav className="flex flex-col items-center gap-6 w-full mt-4">
           {[
-            { label: "Utilisateurs", path: "/dashboard/utilisateurs" },
-            { label: "Organisateurs", path: "/dashboard/organisateurs" },
-            { label: "Evènements", path: "/dashboard/evenements" },
-            { label: "Catégories", path: "/dashboard/categories" },
-            { label: "Lieu", path: "/dashboard/lieux" },
-            { label: "Tickets", path: "/dashboard/tickets" },
-            { label: "Evènement en tendance", path: "/dashboard" },
+            { label: "Utilisateurs", path: "/Admin/Utilisateurs" },
+            { label: "Organisateurs", path: "/Admin/Organisateurs" },
+            { label: "Evènements", path: "/Admin/Evenements" },
+            { label: "Catégories", path: "/Admin/Categories" },
+            { label: "Lieu", path: "/Admin/Lieux" },
+            { label: "Tickets", path: "/Admin/Tickets" },
+     
           ].map((item) => (
             <Link
               key={item.path}

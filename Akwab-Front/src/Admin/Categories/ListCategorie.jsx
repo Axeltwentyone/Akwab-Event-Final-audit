@@ -1,19 +1,17 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function ListLieux() {
+export default function ListCategories() {
   const navigate = useNavigate();
-  const [lieux, setLieux] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [deleting, setDeleting] = useState(false);
-
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
-
   const [debouncedSearch, setDebouncedSearch] = useState("");
 
   useEffect(() => {
@@ -25,31 +23,27 @@ export default function ListLieux() {
   }, [search]);
 
   useEffect(() => {
-    fetchLieux(currentPage, debouncedSearch);
+    fetchCategories(currentPage, debouncedSearch);
   }, [currentPage, debouncedSearch]);
 
-  async function fetchLieux(page, searchTerm) {
+  async function fetchCategories(page, searchTerm) {
     setLoading(true);
     setError("");
     try {
       const params = new URLSearchParams({ page });
       if (searchTerm) params.append("search", searchTerm);
-
       const res = await fetch(
-        `http://127.0.0.1:8000/api/lieux?${params.toString()}`,
+        `http://127.0.0.1:8000/api/categories?${params.toString()}`,
         {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         },
       );
       const data = await res.json();
-
-      setLieux(data.data || []);
+      setCategories(data.data || []);
       setTotalPages(data.meta?.last_page || 1);
       setTotalItems(data.meta?.total ?? (data.data ? data.data.length : 0));
     } catch {
-      setError("Impossible de charger les lieux.");
+      setError("Impossible de charger les catégories.");
     } finally {
       setLoading(false);
     }
@@ -58,16 +52,14 @@ export default function ListLieux() {
   async function handleDelete(id) {
     setDeleting(true);
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/lieux/${id}`, {
+      const res = await fetch(`http://127.0.0.1:8000/api/categories/${id}`, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       const data = await res.json();
       if (data.success || res.ok) {
         setDeleteConfirm(null);
-        fetchLieux(currentPage, debouncedSearch);
+        fetchCategories(currentPage, debouncedSearch);
       } else {
         alert(data.message ?? "Erreur lors de la suppression.");
       }
@@ -84,24 +76,24 @@ export default function ListLieux() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-purple-600 tracking-wide">
-            Lieux
+            Catégories
           </h1>
           <p className="text-sm text-gray-400 mt-1">
-            {totalItems} lieu{totalItems !== 1 ? "x" : ""}
+            {totalItems} catégorie{totalItems !== 1 ? "s" : ""}
           </p>
         </div>
         <button
-          onClick={() => navigate("/admin/lieux/create")}
+          onClick={() => navigate("/dashboard/categories/create")}
           className="w-full sm:w-auto px-5 py-2.5 bg-purple-600 text-white text-sm font-semibold rounded-lg hover:bg-purple-700 transition-colors shadow-sm"
         >
-          Créer un lieu
+          Créer une catégorie
         </button>
       </div>
 
-      {/* Barre de recherche */}
+      {/* Recherche */}
       <input
         type="text"
-        placeholder="Rechercher par nom, ville, adresse..."
+        placeholder="Rechercher par libellé..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         className="border border-[#4D027A] rounded-lg px-4 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-300 w-full shadow-sm"
@@ -119,73 +111,89 @@ export default function ListLieux() {
         </div>
       )}
 
-      {/* Liste des lieux */}
       {!loading && !error && (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {lieux.length === 0 ? (
-              <div className="col-span-full text-center py-16 text-gray-400">
-                {debouncedSearch
-                  ? "Aucun lieu ne correspond à votre recherche."
-                  : "Aucun lieu pour le moment."}
-              </div>
-            ) : (
-              lieux.map((lieu) => (
-                <div
-                  key={lieu.id}
-                  className="bg-white rounded-xl border border-gray-200 overflow-hidden flex flex-col hover:shadow-md transition-shadow"
-                >
-                  {/* Icône lieu */}
-                  <div className="h-28 bg-purple-50 flex items-center justify-center">
-                    <img
-                      src="/location.svg"
-                      alt=""
-                      className="w-10 h-10 opacity-60"
-                    />
-                  </div>
-
-                  <div className="p-4 flex flex-col gap-2 flex-1">
-                    <h3 className="font-bold text-[#4D027A] text-sm line-clamp-1">
-                      {lieu.nom}
-                    </h3>
-                    <p className="text-xs text-gray-500 line-clamp-1">
-                      {lieu.ville}
-                    </p>
-                    <p className="text-xs text-gray-400 line-clamp-2 min-h-[2rem]">
-                      {lieu.adresse}
-                    </p>
-
-                    {/* Actions */}
-                    <div className="flex gap-2 pt-3 border-t border-gray-100 mt-2">
-                      <button
-                        onClick={() => navigate(`/admin/lieux/${lieu.id}`)}
-                        className="flex-1 text-xs py-2 border border-[#05CDC2] rounded-lg text-[#05CDC2] hover:bg-[#05CDC2]/10 font-medium transition-colors"
-                      >
-                        Détails
-                      </button>
-                      <button
-                        onClick={() =>
-                          navigate(`/admin/lieux/${lieu.id}/edit`)
-                        }
-                        className="flex-1 text-xs py-2 border border-purple-200 rounded-lg text-purple-600 hover:bg-purple-50 transition-colors"
-                      >
-                        Modifier
-                      </button>
-                      <button
-                        onClick={() => setDeleteConfirm(lieu.id)}
-                        className="py-2 px-3 border border-red-200 rounded-lg text-red-500 hover:bg-red-50 transition-colors flex items-center justify-center flex-shrink-0"
-                      >
-                        <img
-                          src="/bin.svg"
-                          alt="Supprimer"
-                          className="w-4 h-4"
-                        />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))
-            )}
+          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-gray-100">
+                  <th className="text-left px-4 py-3 text-xs text-gray-400 uppercase tracking-wide font-medium">
+                    Image
+                  </th>
+                  <th className="text-left px-4 py-3 text-xs text-gray-400 uppercase tracking-wide font-medium">
+                    Libellé
+                  </th>
+                  <th className="text-right px-4 py-3 text-xs text-gray-400 uppercase tracking-wide font-medium">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {categories.length === 0 ? (
+                  <tr>
+                    <td colSpan={3} className="text-center py-16 text-gray-400">
+                      {debouncedSearch
+                        ? "Aucune catégorie ne correspond à votre recherche."
+                        : "Aucune catégorie pour le moment."}
+                    </td>
+                  </tr>
+                ) : (
+                  categories.map((categorie) => (
+                    <tr
+                      key={categorie.id}
+                      className="border-t border-gray-100 hover:bg-gray-50 transition-colors"
+                    >
+                      {/* Image */}
+                      <td className="px-4 py-3">
+                        <div className="w-12 h-12 rounded-lg bg-purple-50 overflow-hidden flex items-center justify-center flex-shrink-0">
+                          <img
+                            src={categorie.image}
+                            alt={categorie.libelle}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.target.style.display = "none";
+                              e.target.parentNode.innerHTML = `<i class="ti ti-photo" style="font-size:20px;color:#7F77DD"></i>`;
+                            }}
+                          />
+                        </div>
+                      </td>
+                      {/* Libellé */}
+                      <td className="px-4 py-3 font-medium text-[#4D027A]">
+                        {categorie.libelle}
+                      </td>
+                      {/* Actions */}
+                      <td className="px-4 py-3">
+                        <div className="flex gap-2 justify-end">
+                          <button
+                            onClick={() =>
+                              navigate(
+                                `/dashboard/categories/${categorie.id}/edit`,
+                              )
+                            }
+                            className="flex items-center gap-1 px-3 py-1.5 text-xs border border-purple-200 text-purple-600 rounded-lg hover:bg-purple-50 transition-colors"
+                          >
+                            <i
+                              className="ti ti-edit"
+                              style={{ fontSize: 13 }}
+                            />
+                            Modifier
+                          </button>
+                          <button
+                            onClick={() => setDeleteConfirm(categorie.id)}
+                            className="px-3 py-1.5 border border-red-200 text-red-500 rounded-lg hover:bg-red-50 transition-colors"
+                          >
+                            <i
+                              className="ti ti-trash"
+                              style={{ fontSize: 13 }}
+                            />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
 
           {/* Pagination */}
@@ -198,7 +206,7 @@ export default function ListLieux() {
               >
                 Précédent
               </button>
-              <span className="text-sm font-semibold bg-gray-100 border border-gray-200 text-gray-600 px-3 py-1 rounded-lg shadow-sm">
+              <span className="text-sm font-semibold bg-gray-100 border border-gray-200 text-gray-600 px-3 py-1 rounded-lg">
                 {currentPage}/{totalPages}
               </span>
               <button
@@ -215,16 +223,15 @@ export default function ListLieux() {
         </>
       )}
 
-      {/* Delete modal */}
       {deleteConfirm && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-xl">
             <h3 className="font-semibold text-gray-800 text-lg mb-2">
-              Supprimer ce lieu ?
+              Supprimer cette catégorie ?
             </h3>
             <p className="text-sm text-gray-500 mb-6">
-              Cette action est irréversible. Les événements liés à ce lieu
-              pourraient être affectés.
+              Cette action est irréversible. Les événements liés à cette
+              catégorie pourraient être affectés.
             </p>
             <div className="flex gap-3">
               <button
@@ -247,5 +254,4 @@ export default function ListLieux() {
       )}
     </div>
   );
-
 }

@@ -101,7 +101,7 @@ export default function ShowTicket() {
     return (
       <div className="flex flex-col gap-4 p-4 max-w-xl mx-auto">
         <button
-          onClick={() => navigate("/dashboard/tickets")}
+          onClick={() => navigate("/admin/tickets")}
           className="text-gray-400 hover:text-purple-500 w-fit text-sm"
         >
           ← Retour
@@ -121,7 +121,7 @@ export default function ShowTicket() {
       {/* Header */}
       <div className="flex items-center gap-3">
         <button
-          onClick={() => navigate("/dashboard/tickets")}
+          onClick={() => navigate("/admin/tickets")}
           className="text-gray-400 hover:text-purple-500 transition-colors"
         >
           ←

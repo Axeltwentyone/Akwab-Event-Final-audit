@@ -61,7 +61,7 @@ export default function ShowUtilisateur() {
       {/* Header */}
       <div className="flex items-center gap-3">
         <button
-          onClick={() => navigate("/dashboard/utilisateurs")}
+          onClick={() => navigate("/admin/utilisateurs")}
           className="text-gray-400 hover:text-purple-500 transition-colors"
         >
           ←

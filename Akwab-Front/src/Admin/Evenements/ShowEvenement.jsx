@@ -40,7 +40,7 @@ export default function ShowEvenement() {
       });
       const data = await res.json();
       if (data.success || res.ok) {
-        navigate("/dashboard/evenements");
+        navigate("/admin/evenements");
       }
     } catch {
       alert("Erreur lors de la suppression.");
@@ -78,9 +78,8 @@ export default function ShowEvenement() {
 
   return (
     <div className="flex flex-col gap-6 max-w-4xl p-4 md:p-0">
-      
       <button
-        onClick={() => navigate("/dashboard/evenements")}
+        onClick={() => navigate("/admin/evenements")}
         className="flex items-center gap-2 text-sm text-gray-400 hover:text-purple-500 transition-colors w-fit"
       >
         Retour aux événements
@@ -112,9 +111,7 @@ export default function ShowEvenement() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-       
         <div className="md:col-span-2 flex flex-col gap-4">
-         
           <div className="bg-white rounded-xl border border-gray-200 p-5">
             {ev.categories && (
               <span className="inline-block bg-purple-100 text-purple-600 text-xs font-medium px-3 py-1 rounded-full mb-3">
@@ -154,7 +151,6 @@ export default function ShowEvenement() {
             </div>
           </div>
 
-          
           <div className="bg-white rounded-xl border border-gray-200 p-5">
             <p className="text-xs font-semibold text-purple-500 uppercase tracking-wide mb-3">
               Description
@@ -165,33 +161,44 @@ export default function ShowEvenement() {
           </div>
 
           {ev.organisateurs && (
-            <div className="bg-white rounded-xl border border-gray-200 p-5">
-              <p className="text-xs font-semibold text-purple-500 uppercase tracking-wide mb-3">
-                Organisateur
-              </p>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
-                  {ev.organisateurs.nom?.[0]?.toUpperCase()}
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-800">
-                    {ev.organisateurs.nom}
-                  </p>
-                  <p className="text-xs text-gray-400">
-                    {ev.organisateurs.email}
-                  </p>
+            <>
+              <div className="bg-white rounded-xl border border-gray-200 p-5">
+                <p className="text-xs font-semibold text-purple-500 uppercase tracking-wide mb-3">
+                  Organisateur
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
+                    {ev.organisateurs.nom?.[0]?.toUpperCase()}
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-800">
+                      {ev.organisateurs.nom}
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      {ev.organisateurs.email}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
+
+              <div className="bg-white rounded-xl border border-gray-200 p-5 flex items-center gap-3">
+                <img src="/heart.svg" alt="Likes" className="w-5 h-5" />
+                <span className="text-sm font-medium text-gray-700">
+                  {ev.utilisateurs_aiment_count ?? 0} utilisateur
+                  {(ev.utilisateurs_aiment_count ?? 0) > 1
+                    ? "s ont"
+                    : " a"}{" "}
+                  aimé cet événement
+                </span>
+              </div>
+            </>
           )}
         </div>
 
- 
         <div className="flex flex-col gap-4">
-
           <div className="bg-white rounded-xl border border-gray-200 p-4 flex flex-col gap-2">
             <button
-              onClick={() => navigate(`/dashboard/evenements/${id}/edit`)}
+              onClick={() => navigate(`/admin/evenements/${id}/edit`)}
               className="w-full py-2 bg-purple-600 text-white text-sm font-semibold rounded-lg hover:bg-purple-700 transition-colors shadow-sm"
             >
               Modifier
@@ -204,7 +211,6 @@ export default function ShowEvenement() {
             </button>
           </div>
 
-       
           <div className="grid grid-cols-1 gap-2">
             <div className="bg-teal-50 border border-teal-100 rounded-xl p-4 shadow-sm">
               <p className="text-xs text-teal-600 font-medium mb-1">
@@ -232,7 +238,6 @@ export default function ShowEvenement() {
             </div>
           </div>
 
-         
           {ev.types_tickets?.length > 0 && (
             <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
               <p className="text-xs font-semibold text-purple-500 uppercase tracking-wide mb-3">

@@ -18,17 +18,34 @@ class TicketController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $tickets = Ticket::with([
+        $query = Ticket::with([
             'utilisateur',
             'typeTicket',
             'evenement'
-        ])->get();
+        ]);
+
+        // Filtre par événement
+        if ($request->id_evenement) {
+            $query->where('id_evenement', $request->id_evenement);
+        }
+
+        // Gains totaux AVANT pagination
+        $gains_total = (clone $query)->sum('prix_total');
+
+        // Pagination
+        $tickets = $query->paginate(10);
 
         return response()->json([
-            'success' => true,
-            'data'    => TicketResource::collection($tickets),
+            'success'     => true,
+            'data'        => TicketResource::collection($tickets),
+            'gains_total' => (float) $gains_total,
+            'meta'        => [
+                'current_page' => $tickets->currentPage(),
+                'last_page'    => $tickets->lastPage(),
+                'total'        => $tickets->total(),
+            ],
         ]);
     }
 
