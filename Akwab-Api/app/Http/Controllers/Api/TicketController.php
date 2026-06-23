@@ -148,6 +148,8 @@ class TicketController extends Controller
     public function show(string $id)
     {
         $ticket = Ticket::with([
+            'evenement.lieux',
+            'evenement.organisateurs',
             'utilisateur',
             'typeTicket',
             'evenement',
