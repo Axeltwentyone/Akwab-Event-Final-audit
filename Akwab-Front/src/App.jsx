@@ -18,6 +18,16 @@ import ListOrganisateur from "./Admin/Organisateurs/ListOrganisateur";
 import ShowOrganisateur from "./Admin/Organisateurs/ShowOrganisateur";
 import CreateOrganisateur from "./Admin/Organisateurs/CreateOrganisateur";
 import UpdateOrganisateur from "./Admin/Organisateurs/UpdateOrganisateur";
+import Accueil from "./Utilisateurs/Accueil";
+import Favoris from "./Utilisateurs/Favoris/Favoris";
+import TousEvenements from "./Utilisateurs/Evenements/TousEvenements";
+import DetailEvenement from "./Utilisateurs/Evenements/DetailEvenement";
+import Paiement from "./Utilisateurs/Paiements/Paiement";
+import DetailTicket from "./Utilisateurs/Paiements/DetailTicket";
+import HistoriqueTicket from "./Utilisateurs/Paiements/HistoriqueTickets";
+import DetailCategorie from "./Utilisateurs/Categories/DetailCategorie";
+import UpdateProfil from "./Utilisateurs/Profil/UpdateProfil";
+import VueProfil from "./Utilisateurs/Profil/VueProfil";
 
 import ListEvenements from "./Admin/Evenements/ListEvenement";
 import ShowEvenement from "./Admin/Evenements/ShowEvenement";
@@ -48,14 +58,26 @@ function App() {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/register" element={<Register />} />
         <Route path="/header" element={<UtilisateurLayout />} />
+          
+        <Route path="/accueil" element={<Accueil />} />
 
-        <Route
-          path="/utilisateurs/:id/update"
-          element={<UpdateUtilisateur />}
-        />
+        <Route path="/categorie/:id" element={<DetailCategorie />} />
 
-        {/* Routes protégées */}
-        <Route element={<PrivateRoute />}>
+        <Route path="/evenements" element={<TousEvenements />} />
+        <Route path="/evenements/:id" element={<DetailEvenement />} />
+
+        <Route path="/favoris" element={<Favoris />} />
+
+        <Route path="/paiement" element={<Paiement />} />
+        <Route path="/ticket/:id" element={<DetailTicket />} />
+        <Route path="/tickets" element={<HistoriqueTicket />} />
+
+        <Route path="/profil" element={<VueProfil />} />
+        <Route path="/profil/modifier" element={<UpdateProfil />} />
+
+
+        {/* admin */}
+         <Route element={<PrivateRoute />}>
           <Route path="/Admin" element={<AdminLayout />}>
             <Route index path="Dashboard" element={<Dashboard />} />
 
