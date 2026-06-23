@@ -20,9 +20,12 @@ class TicketResource extends JsonResource
             'prix_total'         => $this->prix_total,
             'date_reservation'   => $this->date_reservation?->toDateTimeString(),
             'nombre_ticket_pris' => $this->nombre_ticket_pris,
-            'id_utilisateurs'    => $this->id_utilisateurs,
-            'id_evenement'       => $this->id_evenement,
-            'id_type_ticket'     => $this->id_type_ticket,
+            'id_utilisateur'    => $this->id_utilisateur,
+            // 'id_evenement'       => $this->id_evenement,
+            // 'id_type_ticket'     => $this->id_type_ticket,
+
+            'evenement'   => new EvenementResource($this->whenLoaded('evenements')),
+            'type_ticket' => new TypeTicketResource($this->whenLoaded('typeTicket')),
         ];
     }
 }

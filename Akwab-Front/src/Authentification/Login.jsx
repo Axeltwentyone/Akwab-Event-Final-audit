@@ -30,13 +30,13 @@ export default function Login() {
       if (data.token) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
-        console.log("user:", data.user); // ajoute ça
-        console.log("id_role:", data.user.id_role, typeof data.user.id_role); // et ça
+        // console.log("user:", data.user); 
+        // console.log("id_role:", data.user.id_role, typeof data.user.id_role);
 
         if (data.user.id_role === 1) {
           navigate("/Dashboard");
         } else {
-          navigate("/header");
+          navigate("/accueil");
         }
       } else {
         setError(data.message || "Email ou mot de passe incorrect.");

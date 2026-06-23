@@ -14,6 +14,16 @@ import ListOrganisateur from "./Admin/Organisateurs/ListOrganisateur";
 import ShowOrganisateur from "./Admin/Organisateurs/ShowOrganisateur";
 import CreateOrganisateur from "./Admin/Organisateurs/CreateOrganisateur";
 import UpdateOrganisateur from "./Admin/Organisateurs/UpdateOrganisateur";
+import Accueil from "./Utilisateurs/Accueil";
+import Favoris from "./Utilisateurs/Favoris/Favoris";
+import TousEvenements from "./Utilisateurs/Evenements/TousEvenements";
+import DetailEvenement from "./Utilisateurs/Evenements/DetailEvenement";
+import Paiement from "./Utilisateurs/Paiements/Paiement";
+import DetailTicket from "./Utilisateurs/Paiements/DetailTicket";
+import HistoriqueTicket from "./Utilisateurs/Paiements/HistoriqueTickets";
+import DetailCategorie from "./Utilisateurs/Categories/DetailCategorie";
+import UpdateProfil from "./Utilisateurs/Profil/UpdateProfil";
+import VueProfil from "./Utilisateurs/Profil/VueProfil";
 
 function App() {
   return (
@@ -30,6 +40,23 @@ function App() {
           path="utilisateurs/:id/modifier"
           element={<UpdateUtilisateur />}
         />
+        <Route path="/accueil" element={<Accueil />} />
+
+        <Route path="/categorie/:id" element={<DetailCategorie />} />
+
+        <Route path="/evenements" element={<TousEvenements />} />
+        <Route path="/evenements/:id" element={<DetailEvenement />} />
+
+        <Route path="/favoris" element={<Favoris />} />
+
+        <Route path="/paiement" element={<Paiement />} />
+        <Route path="/ticket/:id" element={<DetailTicket />} />
+        <Route path="/tickets" element={<HistoriqueTicket />} />
+
+        <Route path="/profil" element={<VueProfil />} />
+        <Route path="/profil/modifier" element={<UpdateProfil />} />
+
+
         {/* admin */}
         <Route path="/dashboard" element={<AdminLayout />}>
           <Route index element={<Dashboard />} />
