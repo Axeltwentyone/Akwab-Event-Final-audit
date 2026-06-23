@@ -66,7 +66,7 @@ export default function ShowOrganisateur() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => navigate("/dashboard/organisateurs")}
+            onClick={() => navigate("/admin/organisateurs")}
             className="text-gray-400 hover:text-purple-500 transition-colors"
           >
             ←
@@ -76,7 +76,7 @@ export default function ShowOrganisateur() {
           </h1>
         </div>
         <button
-          onClick={() => navigate(`/dashboard/organisateurs/${id}/modifier`)}
+          onClick={() => navigate(`/admin/organisateurs/${id}/modifier`)}
           className="px-4 py-2 bg-purple-600 text-white text-sm font-semibold rounded-lg hover:bg-purple-700 transition-colors"
         >
           Modifier
@@ -84,7 +84,7 @@ export default function ShowOrganisateur() {
       </div>
 
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        <div className="h-24 bg-gradient-to-r from-purple-100 to-teal-50" />
+        <div className="h-24 bg-linear-to-r from-purple-100 to-teal-50" />
         <div className="px-6 pb-6">
           <div className="flex items-end gap-4 -mt-10 mb-6">
             <div className="w-20 h-20 rounded-2xl bg-purple-600 flex items-center justify-center text-white text-2xl font-bold border-4 border-white shadow-sm">

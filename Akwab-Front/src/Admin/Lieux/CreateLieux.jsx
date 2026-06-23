@@ -48,7 +48,7 @@ export default function CreateLieux() {
 
       if (data.success || res.ok) {
         setSuccess(true);
-        setTimeout(() => navigate("/dashboard/lieux"), 1200);
+        setTimeout(() => navigate("/admin/lieux"), 1200);
       } else if (data.errors) {
         setFieldErrors(data.errors);
       } else {
@@ -66,7 +66,7 @@ export default function CreateLieux() {
       <div className="flex flex-col gap-6 max-w-xl w-full">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => navigate("/dashboard/lieux")}
+            onClick={() => navigate("/admin/lieux")}
             className="text-gray-400 hover:text-purple-500 transition-colors"
           >
             ←
@@ -123,7 +123,7 @@ export default function CreateLieux() {
             <div className="flex items-center justify-end gap-3 pt-2">
               <button
                 type="button"
-                onClick={() => navigate("/dashboard/lieux")}
+                onClick={() => navigate("/admin/lieux")}
                 className="px-4 py-2 text-sm text-gray-500 hover:text-gray-700 font-medium transition-colors"
               >
                 Annuler

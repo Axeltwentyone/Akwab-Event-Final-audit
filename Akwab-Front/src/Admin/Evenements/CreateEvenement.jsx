@@ -143,7 +143,7 @@ export default function CreateEvenement() {
       console.log("STATUS:", res.status);
       console.log("RESPONSE:", data);
       if (data.success) {
-        navigate("/dashboard/evenements");
+        navigate("/admin/evenements");
       } else if (data.errors) {
         setFieldErrors(data.errors);
         setStep(STEP_INFO);
@@ -165,7 +165,7 @@ export default function CreateEvenement() {
           onClick={() =>
             step === STEP_TICKETS
               ? setStep(STEP_INFO)
-              : navigate("/dashboard/evenements")
+              : navigate("/admin/evenements")
           }
           className="text-gray-400 hover:text-purple-500 transition-colors"
         >

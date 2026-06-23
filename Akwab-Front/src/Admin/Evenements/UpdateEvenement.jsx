@@ -179,7 +179,7 @@ export default function UpdateEvenement() {
 
       if (data.success || res.ok) {
         setSuccess(true);
-        setTimeout(() => navigate(`/dashboard/evenements/${id}`), 1500);
+        setTimeout(() => navigate(`/admin/evenements/${id}`), 1500);
       } else if (data.errors) {
         setFieldErrors(data.errors);
       } else {
@@ -201,7 +201,7 @@ export default function UpdateEvenement() {
     <div className="flex flex-col gap-6 max-w-2xl">
       <div className="flex items-center gap-3">
         <button
-          onClick={() => navigate(`/dashboard/evenements/${id}`)}
+          onClick={() => navigate(`/admin/evenements/${id}`)}
           className="text-gray-400 hover:text-purple-500 transition-colors"
         >
           
@@ -456,7 +456,7 @@ export default function UpdateEvenement() {
           <div className="px-6 py-4 border-t border-gray-100 bg-gray-50 flex items-center justify-end gap-3">
             <button
               type="button"
-              onClick={() => navigate(`/dashboard/evenements/${id}`)}
+              onClick={() => navigate(`/admin/evenements/${id}`)}
               className="px-4 py-2 text-sm text-gray-500 hover:text-gray-700 font-medium transition-colors"
             >
               Annuler

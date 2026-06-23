@@ -85,7 +85,7 @@ export default function ListEvenements() {
           </p>
         </div>
         <button
-          onClick={() => navigate("/dashboard/evenements/create")}
+          onClick={() => navigate("/admin/evenements/create")}
           className="w-full sm:w-auto px-5 py-2.5 bg-purple-600 text-white text-sm font-semibold rounded-lg hover:bg-purple-700 transition-colors shadow-sm"
         >
           Créer un événement
@@ -166,7 +166,7 @@ export default function ListEvenements() {
                     <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 text-xs text-gray-400 mt-auto pt-2">
                       {ev.date && (
                         <span className="flex items-center gap-1">
-                          {/* Corrigé : Remplacement de la variable par la chaîne du dossier public */}
+                          
                           <img
                             src="/calendar.svg"
                             alt="Date"
@@ -177,7 +177,7 @@ export default function ListEvenements() {
                       )}
                       {ev.lieux && (
                         <span className="flex items-center gap-1">
-                          {/* Corrigé : Remplacement de la variable par la chaîne du dossier public */}
+                          
                           <img
                             src="/location.svg"
                             alt="Lieu"
@@ -191,7 +191,7 @@ export default function ListEvenements() {
                     <div className="flex gap-2 pt-3 border-t border-gray-100 mt-2">
                       <button
                         onClick={() =>
-                          navigate(`/dashboard/evenements/${ev.id_evenement}`)
+                          navigate(`/admin/evenements/${ev.id_evenement}`)
                         }
                         className="flex-1 text-xs py-2 border border-[#05CDC2] rounded-lg text-[#05CDC2] hover:bg-[#05CDC2]/10 font-medium transition-colors"
                       >
@@ -200,7 +200,7 @@ export default function ListEvenements() {
                       <button
                         onClick={() =>
                           navigate(
-                            `/dashboard/evenements/${ev.id_evenement}/edit`,
+                            `/admin/evenements/${ev.id_evenement}/edit`,
                           )
                         }
                         className="flex-1 text-xs py-2 border border-purple-200 rounded-lg text-purple-600 hover:bg-purple-50 transition-colors"
@@ -211,7 +211,7 @@ export default function ListEvenements() {
                         onClick={() => setDeleteConfirm(ev.id_evenement)}
                         className="py-2 px-3 border border-red-200 rounded-lg text-red-500 hover:bg-red-50 transition-colors flex items-center justify-center flex-shrink-0"
                       >
-                        {/* Corrigé : Remplacement de la variable par la chaîne du dossier public */}
+                        
                         <img
                           src="/bin.svg"
                           alt="Supprimer"
