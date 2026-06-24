@@ -83,7 +83,7 @@ export default function ListCategories() {
           </p>
         </div>
         <button
-          onClick={() => navigate("/dashboard/categories/create")}
+          onClick={() => navigate("/admin/categories/create")}
           className="w-full sm:w-auto px-5 py-2.5 bg-purple-600 text-white text-sm font-semibold rounded-lg hover:bg-purple-700 transition-colors shadow-sm"
         >
           Créer une catégorie
@@ -167,7 +167,7 @@ export default function ListCategories() {
                           <button
                             onClick={() =>
                               navigate(
-                                `/dashboard/categories/${categorie.id}/edit`,
+                                `/admin/categories/${categorie.id}/edit`,
                               )
                             }
                             className="flex items-center gap-1 px-3 py-1.5 text-xs border border-purple-200 text-purple-600 rounded-lg hover:bg-purple-50 transition-colors"

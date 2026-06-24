@@ -3,7 +3,12 @@ import { useNavigate } from "react-router-dom";
 
 export default function CreateOrganisateur() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ nom: "", email: "", description: "" });
+  const [form, setForm] = useState({
+    nom: "",
+    email: "",
+    telephone: "",
+    description: "",
+  });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
@@ -32,7 +37,7 @@ export default function CreateOrganisateur() {
       const data = await res.json();
 
       if (data.success) {
-        navigate("/admin/organisateurs");
+        navigate("/Admin/organisateurs");
       } else if (data.errors) {
         setFieldErrors(data.errors);
       } else {
@@ -47,17 +52,9 @@ export default function CreateOrganisateur() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center gap-3">
-        <button
-          onClick={() => navigate("/admin/organisateurs")}
-          className="text-gray-400 hover:text-purple-500 transition-colors"
-        >
-          ←
-        </button>
-        <h1 className="text-2xl font-bold text-purple-600 tracking-wide">
-          Nouvel organisateur
-        </h1>
-      </div>
+      <h1 className="text-2xl font-bold text-purple-600 tracking-wide text-center">
+        Nouvel organisateur
+      </h1>
 
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg px-4 py-3">
@@ -86,9 +83,18 @@ export default function CreateOrganisateur() {
               error={fieldErrors.email}
               required
             />
+            <Field
+              label="Téléphone"
+              name="telephone"
+              type="tel"
+              value={form.telephone}
+              onChange={handleChange}
+              error={fieldErrors.telephone}
+              required
+            />
             <div className="flex flex-col gap-1 md:col-span-2">
               <label className="text-xs text-gray-500 font-medium uppercase tracking-wide">
-                Description
+                Description <span className="text-red-400">*</span>
               </label>
               <textarea
                 name="description"
@@ -109,13 +115,13 @@ export default function CreateOrganisateur() {
             </div>
           </div>
 
-          <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-end gap-3 bg-gray-50">
+          <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50">
             <button
               type="button"
-              onClick={() => navigate("/admin/organisateurs")}
-              className="px-4 py-2 text-sm text-gray-500 hover:text-gray-700 font-medium transition-colors"
+              onClick={() => navigate("/Admin/organisateurs")}
+              className="px-4 py-2 text-sm text-purple-600 font-medium border border-purple-200 rounded-lg hover:bg-purple-50 transition-colors"
             >
-              Annuler
+              Retour
             </button>
             <button
               type="submit"
