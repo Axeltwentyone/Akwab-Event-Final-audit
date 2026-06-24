@@ -7,6 +7,8 @@ export default function ListOrganisateur() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [page, setPage] = useState(1);
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [deleting, setDeleting] = useState(false);
   const parPage = 8;
 
   useEffect(() => {
@@ -36,7 +38,7 @@ export default function ListOrganisateur() {
   }
 
   async function handleDelete(id) {
-    if (!confirm("Confirmer la suppression ?")) return;
+    setDeleting(true);
     try {
       const res = await fetch(`http://127.0.0.1:8000/api/organisateurs/${id}`, {
         method: "DELETE",
@@ -45,11 +47,18 @@ export default function ListOrganisateur() {
         },
       });
       const data = await res.json();
-      if (data.success) {
+      if (data.success || res.ok) {
         setOrganisateurs(organisateurs.filter((o) => o.id_organisateur !== id));
+        setDeleteConfirm(null);
+      } else {
+        setError(data.message ?? "Erreur lors de la suppression.");
+        setDeleteConfirm(null);
       }
     } catch {
       setError("Erreur lors de la suppression.");
+      setDeleteConfirm(null);
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -63,7 +72,7 @@ export default function ListOrganisateur() {
           Liste des organisateurs
         </h1>
         <button
-          onClick={() => navigate("/admin/organisateurs/creer")}
+          onClick={() => navigate("/Admin/organisateurs/create")}
           className="px-4 py-2 bg-purple-600 text-white text-sm font-semibold rounded-lg hover:bg-purple-700 transition-colors"
         >
           + Nouvel organisateur
@@ -108,9 +117,7 @@ export default function ListOrganisateur() {
                     <div className="flex items-center justify-center gap-2">
                       <button
                         onClick={() =>
-                          navigate(
-                            `/admin/organisateurs/${o.id_organisateur}`,
-                          )
+                          navigate(`/Admin/organisateurs/${o.id_organisateur}`)
                         }
                         className="text-teal-500 font-semibold hover:underline text-xs"
                       >
@@ -120,7 +127,7 @@ export default function ListOrganisateur() {
                       <button
                         onClick={() =>
                           navigate(
-                            `/admin/organisateurs/${o.id_organisateur}/modifier`,
+                            `/Admin/organisateurs/${o.id_organisateur}/modifier`,
                           )
                         }
                         className="text-purple-500 font-semibold hover:underline text-xs"
@@ -129,7 +136,7 @@ export default function ListOrganisateur() {
                       </button>
                       <span className="text-gray-300">|</span>
                       <button
-                        onClick={() => handleDelete(o.id_organisateur)}
+                        onClick={() => setDeleteConfirm(o.id_organisateur)}
                         className="text-red-500 font-semibold hover:underline text-xs"
                       >
                         Supprimer
@@ -162,6 +169,36 @@ export default function ListOrganisateur() {
           >
             →
           </button>
+        </div>
+      )}
+
+      {deleteConfirm && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-xl">
+            <h3 className="font-semibold text-gray-800 text-lg mb-2">
+              Supprimer cet organisateur ?
+            </h3>
+            <p className="text-sm text-gray-500 mb-6">
+              Cette action est irréversible. Les événements liés à cet
+              organisateur pourraient être affectés.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setDeleteConfirm(null)}
+                disabled={deleting}
+                className="flex-1 py-2 border border-gray-200 rounded-lg text-sm text-gray-500 hover:bg-gray-50 transition-colors disabled:opacity-50"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={() => handleDelete(deleteConfirm)}
+                disabled={deleting}
+                className="flex-1 py-2 bg-red-500 text-white rounded-lg text-sm font-semibold hover:bg-red-600 transition-colors disabled:opacity-50"
+              >
+                {deleting ? "Suppression..." : "Supprimer"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

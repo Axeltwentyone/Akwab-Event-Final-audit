@@ -78,7 +78,7 @@ export default function UpdateCategorie() {
 
       if (data.success || res.ok) {
         setSuccess(true);
-        setTimeout(() => navigate("/dashboard/categories"), 1200);
+        setTimeout(() => navigate("/admin/categories"), 1200);
       } else if (data.errors) {
         setFieldErrors(data.errors);
       } else {
@@ -170,7 +170,7 @@ export default function UpdateCategorie() {
               <div className="flex items-center justify-between pt-2">
                 <button
                   type="button"
-                  onClick={() => navigate("/dashboard/categories")}
+                  onClick={() => navigate("/admin/categories")}
                   className="px-4 py-2 text-sm text-purple-600 font-medium border border-purple-200 rounded-lg hover:bg-purple-50 transition-colors"
                 >
                   Retour
