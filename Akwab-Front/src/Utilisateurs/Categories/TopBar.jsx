@@ -99,7 +99,7 @@ function TopBar() {
                             placeholder="Recherche..." className="bg-transparent text-sm text-[#1E1B2E] placeholder-gray-400 outline-none w-full" />
                     </div>
 
-                    <button onClick={() => recherche.trim() && rechercherEvenements(recherche)} className="bg-[#D6ABEB] p-3 rounded-xl shadow-sm shrink-0">
+                    <button onClick={() => recherche.trim() && rechercherEvenements(recherche)} className="bg-[#C4E7E5] p-3 rounded-xl shadow-sm shrink-0">
                         <img src={search} alt="search-icon" className="w-4 h-4" />
                     </button>
 

@@ -5,7 +5,7 @@ import Swal from "sweetalert2"
 import { useEffect, useState } from "react"
 import logo from "../../assets/Image/logo.png"
 import { useLikes } from "../../Context/useLikes"
-import heartEmpty from "../../assets/icones/favorite2.svg"
+import heart from "../../assets/icones/favoris.svg"
 import heartFull from "../../assets/icones/Vector.svg"
 import description from "../../assets/icones/description1.svg"
 import locationIcon from "../../assets/icones/location_on.svg"
@@ -162,7 +162,7 @@ function DetailEvenement() {
     return (
         <HeaderLayout>
 
-            <section className="mb-6 px-4 w-full">
+            <section className="mb-6 bg-gray-50 max-w-4xl mx-auto px-5 py-5 w-full">
 
                 <div className="flex items-center mb-3 pt-[50px]">
 
@@ -173,7 +173,7 @@ function DetailEvenement() {
                     </button>
                     <h2
                         id="titre"
-                        className="text-[24px] font-bold text-[#9952DE]"
+                        className="text-[24px] font-bold text-[#253C96]"
                     >
                         Détail de l'évènement
                     </h2>
@@ -195,29 +195,29 @@ function DetailEvenement() {
 
 
                 <div className="flex items-start justify-between mt-5 mb-1">
-                    <h1 className="text-xl font-bold text-[#1E1B2E] uppercase flex-1 pr-4">
+                    <h1 className="text-xl font-bold text-[#F36B2E] uppercase flex-1 pr-4">
                         {evenement.nom}
                     </h1>
                     <button onClick={handleLike} className="shrink-0 mt-6">
-                        <img src={liked ? heartFull : heartEmpty} alt="like" className="w-6 h-6" />
+                        <img src={liked ? heartFull : heart} alt="like" className="w-6 h-6" />
                     </button>
                 </div>
 
 
-                <div className="border-b border-2 mt-2 border-gray-400 mb-4" />
+                <div className="border-b border-1 mt-2 border-gray-400 mb-4" />
 
 
                 <div className="space-y-5 mb-4 text-lg">
                     <div className="flex items-center gap-2 text-gray-600">
-                        <img src={description} alt="description" className="w-8 h-8" />
+                        <img src={description} alt="description" className="w-5 h-5" />
                         <p>{evenement.description}</p>
                     </div>
                     <div className="flex items-center gap-2 text-gray-600">
-                        <img src={dateIcon} alt="date" className="w-8 h-8" />
+                        <img src={dateIcon} alt="date" className="w-6 h-6" />
                         <p>{evenement.date}</p>
                     </div>
                     <div className="flex items-center gap-2 text-gray-600">
-                        <img src={locationIcon} alt="localisation" className="w-8 h-8" />
+                        <img src={locationIcon} alt="localisation" className="w-6 h-6" />
                         <p>
                             {evenement.lieux?.ville} - {evenement.lieux?.nom}
                         </p>
@@ -229,7 +229,7 @@ function DetailEvenement() {
                                 @{evenement.organisateurs?.nom}
                             </span>
                         </p>
-                        <button className="ml-1 px-3 py-0.5 bg-[#D6ABEB] text-[#4D027A] text-xs font-semibold rounded-full">
+                        <button className="ml-1 px-3 py-0.5 bg-[#F36B2E] text-gray-100 text-xs font-semibold rounded-full">
                             S'abonner
                         </button>
                     </div>
@@ -241,13 +241,13 @@ function DetailEvenement() {
                 </div>
 
 
-                <div className="bg-[#4D027A]/25 text-center text-sm p-2 text-gray-700 mb-0">
+                <div className="bg-[#EDE0CE] text-center text-sm p-2 text-gray-700 mb-0">
                     CHOISISSEZ VOS TICKETS
                 </div>
 
 
                 <div className="flex flex-col lg:flex-row gap-4 items-start">
-                    <div className="w-full lg:w-1/2 border border-[#D6ABEB] mt-10 bg-gray-100 overflow-hidden">
+                    <div className="w-full lg:w-1/2 border border-[#253C96] mt-10 bg-gray-100 overflow-hidden">
                         {(evenement.types_tickets || []).map((type, index) => {
                             const qte = quantites[type.id_type_ticket] || 0;
                             const restant = type.quantite_ticket_restante
@@ -258,10 +258,10 @@ function DetailEvenement() {
                                 <div
                                     key={type.id_type_ticket}
                                     className={`p-4 flex items-center justify-between
-                                            ${index > 0 ? "border-t border-[#D6ABEB]" : ""}`}
+                                            ${index > 0 ? "border-t border-[#253C96]" : ""}`}
                                 >
                                     <div>
-                                        <p className="font-bold text-sm text-[#4D027A]">
+                                        <p className="font-bold text-sm text-[#253C96]">
                                             {type.libelle}
                                         </p>
                                         <p className="text-sm text-gray-600">
@@ -277,36 +277,36 @@ function DetailEvenement() {
                                     <div className="flex items-center gap-3">
                                         <button
                                             onClick={() => decrementer(type.id_type_ticket)}
-                                            className="w-7 h-7 rounded border border-[#4D027A]
-                                                text-[#4D027A] font-bold text-lg
+                                            className="w-7 h-7 rounded border border-[#253C96]
+                                                text-[#253C96] font-bold text-lg
                                                 flex items-center justify-center
-                                                hover:bg-[#4D027A] hover:text-white
+                                                hover:bg-[#253C96] hover:text-white
                                                 transition-colors"
                                         >
-                                            −
+                                            -
                                         </button>
                                         <span className="w-6 text-center font-semibold text-sm">
                                             {qte}
                                         </span>
                                         <button
                                             onClick={() => incrementer(type.id_type_ticket, restant)}
-                                            className="w-7 h-7 rounded border border-[#4D027A]
-                                                text-[#4D027A] font-bold text-lg
+                                            className="w-7 h-7 rounded border border-[#253C96]
+                                                text-[#253C96] font-bold text-lg
                                                 flex items-center justify-center
-                                                hover:bg-[#4D027A] hover:text-white
+                                                hover:bg-[#253C96] hover:text-white
                                                 transition-colors"
                                         >
                                             +
                                         </button>
                                     </div>
-                                </div>
+                                </div> 
                             );
                         })}
                     </div>
 
 
                     {showRecap && (
-                        <div className="w-full lg:w-1/2 mb-5 mt-10 border border-[#D6ABEB] bg-gray-100 p-4 self-start">
+                        <div className="w-full lg:w-1/2 mb-5 mt-10 border border-[#253C96] bg-gray-100 p-4 self-start">
                             <p className="font-bold text-sm text-[#1E1B2E] mb-3">
                                 Votre commande
                             </p>
@@ -334,9 +334,9 @@ function DetailEvenement() {
 
                             <button
                                 onClick={allerAuPaiement}
-                                className="w-full mt-4 py-3 bg-[#4D027A] text-white
+                                className="w-full mt-4 py-3 bg-[#253C96] text-white
                                     font-bold text-sm rounded-xl
-                                    hover:bg-[#3a0260] transition-colors"
+                                    hover:bg-[#19244E] transition-colors"
                             >
                                 Aller au paiement
                             </button>

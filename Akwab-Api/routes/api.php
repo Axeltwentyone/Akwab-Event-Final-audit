@@ -22,6 +22,8 @@ Route::post('/register/organisateur', [AuthController::class, 'registerOrganisat
 Route::post('/register/admin', [AuthController::class, 'registerAdmin']);
 Route::post('/login', [AuthController::class, 'login']);
 
+Route::get('/evenements/populaires', [AimerController::class, 'populaires']);
+
 Route::get('/evenements', [EvenementController::class, 'index']);
 Route::get('/evenements/{id}', [EvenementController::class, 'show']);
 Route::get('/types-tickets', [TypeTicketController::class, 'index']);
@@ -43,7 +45,7 @@ Route::post('/reset-password',  [AuthController::class, 'resetPassword']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::apiResource('categories', CategorieController::class)->except(['index', 'show']) ;
+    Route::apiResource('categories', CategorieController::class)->except(['index', 'show']);
     Route::get('/profile', [UtilisateurController::class, 'profile']);
     Route::put('/profileupdate', [UtilisateurController::class, 'updateProfile']);
     Route::get('/mes-tickets', [TicketController::class, 'mesTickets']);
@@ -64,7 +66,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/tickets/{id}', [TicketController::class, 'update']);
         Route::delete('/tickets/{id}', [TicketController::class, 'destroy']);
 
-      
+
         Route::post('/categories', [CategorieController::class, 'store']);
         Route::put('/categories/{id}', [CategorieController::class, 'update']);
         Route::delete('/categories/{id}', [CategorieController::class, 'destroy']);

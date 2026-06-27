@@ -9,7 +9,7 @@ import organisateur from "../../assets/icones/User.svg";
 
 function DetailCategorie() {
     const navigate = useNavigate();
-    const { id } = useParams(); // ← id_categorie depuis l'URL
+    const { id } = useParams(); 
 
     const [categorie, setCategorie] = useState(null);
     const [evenements, setEvenements] = useState([]);
@@ -61,7 +61,7 @@ function DetailCategorie() {
                         className="p-2 rounded-full hover:bg-gray-200 transition">
                         <img src={arrow} alt="fleche-sortie" />
                     </button>
-                    <h2 id="titre" className="text-[24px] font-bold text-[#9952DE]">
+                    <h2 id="titre" className="text-[24px] font-bold text-[#253C96]">
                         Catégorie  {categorie?.libelle || ""}
                     </h2>
                 </div>
@@ -105,7 +105,7 @@ function DetailCategorie() {
                                         <img src={ev.image} alt="image-event" className="w-full sm:w-28 h-32 sm:h-20 object-cover rounded" />
                                     </div>
                                     <div className="w-full sm:w-3/4">
-                                        <h3 className="mb-2 font-bold uppercase text-[#4D027A] text-sm sm:text-base">
+                                        <h3 className="mb-2 font-bold uppercase text-[#F36B2E] text-sm sm:text-base">
                                             {ev.nom}
                                         </h3>
                                         <div className="flex items-center gap-2 text-gray-600">
@@ -131,8 +131,8 @@ function DetailCategorie() {
                                 <div className="border-b border-gray-400 mt-2 mb-4 w-full" />
 
                                 <div className="flex flex-wrap gap-x-8 gap-y-2 text-gray-600">
-                                    <div className="flex">
-                                        <img src={description} alt="icone-description" />
+                                    <div className="flex gap-2">
+                                        <img src={description} alt="icone-description" className="w-5 h-4 mt-1 shrink-0" />
                                         <p>Description</p>
                                     </div>
                                     <span className="font-semibold">
@@ -144,7 +144,7 @@ function DetailCategorie() {
                                 <div className="flex justify-end mt-5">
                                     <button
                                         onClick={() => navigate(`/evenements/${ev.id_evenement}`)}
-                                        className="px-4 py-2 rounded-sm text-[12px] font-semibold bg-[#4D027A] text-white hover:bg-[#D6ABEB] transition-all">
+                                        className="px-4 py-2 rounded-sm text-[12px] font-semibold bg-[#F36B2E] text-white hover:bg-[#D6ABEB] transition-all">
                                         Voir l'événement
                                     </button>
                                 </div>

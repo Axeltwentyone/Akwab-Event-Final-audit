@@ -1,8 +1,8 @@
-import { useNavigate } from "react-router-dom"
+import {  useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react"
 import CardEvenement from "./CardEvenement"
 
-function ListeEvenement({ filtreCategorie }) {
+function EvenementsPopulaire() {
     const [evenements, setEvenements] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
@@ -13,7 +13,7 @@ function ListeEvenement({ filtreCategorie }) {
             try {
                 const token = localStorage.getItem("token");
 
-                const response = await fetch("http://127.0.0.1:8000/api/evenements", {
+                const response = await fetch("http://127.0.0.1:8000/api/evenements/populaires", {
                     method: "GET",
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -36,18 +36,15 @@ function ListeEvenement({ filtreCategorie }) {
         fetchEvenements();
     }, []);
 
-    const evenementsFiltres = filtreCategorie
-        ? evenements.filter(ev => ev.categories?.id_categorie == filtreCategorie)
-        : evenements;
 
-
+    
 
     return (
         <div className="w-full px-4 mt-8 text-start">
             <div className="flex justify-between items-center mb-6">
-                <h2 id="titre" className="text-[24px] font-bold text-[#253C96]">Quelques évènements</h2>
+                <h2 id="titre" className="text-[24px] font-bold text-[#253C96]">Populaires</h2>
                 <button
-                    onClick={() => navigate("/evenements")}
+                    onClick={() => navigate("/evenements/populaires")} 
                     className="text-xs text-gray-500 font-medium hover:text-[#4F46E5]"
                 >
                     voir plus
@@ -60,16 +57,11 @@ function ListeEvenement({ filtreCategorie }) {
                 </div>
             )}
 
-            {!loading && evenementsFiltres.length === 0 && (
-                <div className="text-center py-12 text-gray-400 text-sm">
-                    Aucun événement dans cette catégorie.
-                </div>
-            )}
 
-            {!loading && evenementsFiltres.length > 0 && (
+            {!loading && evenements.length > 0 && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
-                    {evenementsFiltres
-                        .slice(-6)
+                    {evenements
+                        .slice(-3)
                         .map((evt) => (
                             <CardEvenement
                                 key={evt.id_evenement}
@@ -82,4 +74,4 @@ function ListeEvenement({ filtreCategorie }) {
     );
 }
 
-export default ListeEvenement;
+export default EvenementsPopulaire;

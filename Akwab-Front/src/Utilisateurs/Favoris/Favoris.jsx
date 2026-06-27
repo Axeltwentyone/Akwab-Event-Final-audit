@@ -82,7 +82,7 @@ function Favoris() {
                     </button>
                     <h2
                         id="titre"
-                        className="text-[24px] font-bold text-[#9952DE]"
+                        className="text-[24px] font-bold text-[#253C96]"
                     >
                         Favoris
                     </h2>
@@ -133,7 +133,7 @@ function Favoris() {
                 )}
 
                 {!loading && evenements.length > 0 && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  mt-10 gap-4 px-4">
                         {evenements.map((ev) => (
                             <CardEvenement
                                 key={ev.id_evenement}

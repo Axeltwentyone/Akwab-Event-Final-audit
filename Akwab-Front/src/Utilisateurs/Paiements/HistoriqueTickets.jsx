@@ -9,9 +9,9 @@ import dateIcon from "../../assets/icones/date-vert.svg"
 import locationIcon from "../../assets/icones/location_on.svg"
 import Swal from "sweetalert2";
 import logo from "../../assets/Image/logo.png"
-import billet from "../../assets/icones/billet.svg"
-import monnaie from "../../assets/icones/monnaie.svg"
-import hashtag from "../../assets/icones/hashtag.svg"
+import billet from "../../assets/icones/billet-bleu.svg"
+import monnaie from "../../assets/icones/prix-vert.svg"
+import hashtag from "../../assets/icones/hashtag-bleu.svg"
 import jsPDF from "jspdf"
 
 function HistoriqueTicket() {
@@ -19,6 +19,7 @@ function HistoriqueTicket() {
     const [recherche, setRecherche] = useState("");
     const [tickets, setTickets] = useState([]);
     const [loading, setLoading] = useState(true);
+
 
     const handleChange = (e) => setRecherche(e.target.value);
 
@@ -58,6 +59,8 @@ function HistoriqueTicket() {
                 );
                 const data = await response.json();
                 setTickets(data.data || []);
+
+
             } catch (err) {
                 console.error(err);
             } finally {
@@ -68,23 +71,25 @@ function HistoriqueTicket() {
         fetchTickets();
     }, [navigate]);
 
+
     const handleDownload = async (ticket) => {
         try {
+            const saved = localStorage.getItem(`ticket_lignes_${ticket.id}`);
+            const lignes = saved ? JSON.parse(saved) : [];
+
             const pdf = new jsPDF("p", "mm", "a4");
 
             pdf.addImage(logo, "PNG", 15, 10, 30, 30);
 
             pdf.setFontSize(22);
-            pdf.setTextColor(77, 2, 122);
+            pdf.setTextColor(37, 60, 150);
             pdf.text("AKWAB EVENT", 55, 25);
 
             pdf.setFontSize(12);
-            pdf.setTextColor(100);
+            pdf.setTextColor(25, 36, 78);
             pdf.text("Billet d'accès à l'évènement", 55, 33);
-            pdf.setDrawColor(5, 205, 194);
+            pdf.setDrawColor(243, 107, 46);
             pdf.line(10, 45, 200, 45);
-
-
 
             pdf.setFontSize(18);
             pdf.setTextColor(77, 2, 122);
@@ -93,78 +98,53 @@ function HistoriqueTicket() {
             pdf.setFontSize(12);
             pdf.setTextColor(0);
 
-            pdf.text(
-                `Numéro : ${ticket.numero_ticket}`,
-                15,
-                75
-            );
+            pdf.text(`Numéro : ${ticket.numero_ticket}`, 15, 75);
 
-            pdf.text(
-                `Type : ${ticket.type_ticket.libelle}`,
-                15,
-                85
-            );
+            let y = 90;
 
-            pdf.text(
-                `Quantité : ${ticket.nombre_ticket_pris}`,
-                15,
-                95
-            );
+            if (lignes.length > 0) {
+                lignes.forEach(ligne => {
+                    pdf.text(`${ligne.libelle} x${ligne.quantite}`, 15, y);
+                    y += 10;
+                });
+            } else {
+                pdf.text(`Type : ${ticket.type_ticket?.libelle}`, 15, y);
+                y += 10;
+                pdf.text(`Quantité : ${ticket.nombre_ticket_pris}`, 15, y);
+                y += 10;
+            }
+
+            y += 5;
 
             const montant = Number(ticket.prix_total)
                 .toLocaleString("fr-FR")
                 .replace(/\s/g, ".");
 
-            pdf.text(
-                `Montant : ${montant} FCFA`,
-                15,
-                105
-            );
+            pdf.text(`Montant : ${montant} FCFA`, 15, y);
+            y += 10;
 
-            pdf.text(
-                `Date réservation : ${ticket.date_reservation}`,
-                15,
-                115
-            );
+            pdf.text(`Date réservation : ${ticket.date_reservation}`, 15, y);
+            y += 10;
 
-            pdf.text(
-                `Date évènement : ${ticket.evenement.date}`,
-                15,
-                125
-            );
+            pdf.text(`Date évènement : ${ticket.evenement.date}`, 15, y);
+            y += 10;
 
-            pdf.text(
-                `Lieu : ${ticket.evenement.lieux.nom}`,
-                15,
-                135
-            );
+            pdf.text(`Lieu : ${ticket.evenement.lieux.nom}`, 15, y);
+            y += 10;
 
-            pdf.text(
-                `Ville : ${ticket.evenement.lieux.ville}`,
-                15,
-                145
-            );
+            pdf.text(`Ville : ${ticket.evenement.lieux.ville}`, 15, y);
+            y += 10;
 
-            pdf.text(
-                `Organisateur : ${ticket.evenement.organisateurs.nom}`,
-                15,
-                155
-            );
+            pdf.text(`Organisateur : ${ticket.evenement.organisateurs.nom}`, 15, y);
+            y += 10;
 
 
-            pdf.setDrawColor(77, 2, 122);
-            pdf.roundedRect(
-                10,
-                50,
-                190,
-                120,
-                3,
-                3
-            );
+            const rectHeight = y - 45;
+            pdf.setDrawColor(37, 60, 150);
+            pdf.roundedRect(10, 50, 190, rectHeight, 3, 3);
 
-            pdf.save(
-                `Ticket-${ticket.numero_ticket}.pdf`
-            );
+            pdf.save(`Ticket-${ticket.numero_ticket}.pdf`);
+
 
         } catch (error) {
             console.error(error);
@@ -191,7 +171,7 @@ function HistoriqueTicket() {
                         className="p-2 rounded-full hover:bg-gray-200 transition">
                         <img src={arrow} alt="fleche-sortie" />
                     </button>
-                    <h2 id="titre" className="text-[24px] font-bold text-[#9952DE]">
+                    <h2 id="titre" className="text-[24px] font-bold text-[#253C96]">
                         Historique des tickets
                     </h2>
                 </div>
@@ -201,7 +181,7 @@ function HistoriqueTicket() {
                     <div className="flex-1 flex items-center gap-2 bg-white rounded-xl px-3 py-2.5 shadow-sm">
                         <input type="text" value={recherche} onChange={handleChange} placeholder="Recherche..." className="bg-transparent text-sm text-[#1E1B2E] placeholder-gray-400 outline-none w-full" />
                     </div>
-                    <button className="bg-[#D6ABEB] p-3 rounded-xl shadow-sm shrink-0">
+                    <button className="bg-[#C4E7E5] p-3 rounded-xl shadow-sm shrink-0">
                         <img src={search} alt="search-icon" className="w-4 h-4 text-white" />
                     </button>
                 </div>
@@ -246,7 +226,7 @@ function HistoriqueTicket() {
                                         <img src={ticket.evenement?.image} alt="image-event" className="w-full sm:w-28 h-32 sm:h-20 object-cover rounded" />
                                     </div>
                                     <div className="w-full sm:w-3/4">
-                                        <h3 className="mb-2 font-bold uppercase text-[#4D027A] text-sm sm:text-base">
+                                        <h3 className="mb-2 font-bold uppercase text-[#F36B2E] text-sm sm:text-base">
                                             {ticket.evenement?.nom}
                                         </h3>
                                         <div className="flex items-center gap-2 text-gray-600">
@@ -265,13 +245,24 @@ function HistoriqueTicket() {
                                 <div className="border-b border-gray-400 mt-2 mb-4 w-full" />
 
 
-                                <div className="flex flex-wrap gap-x-8 gap-y-2 text-gray-600">
-                                    <div className="flex items-center">
-                                        <img src={billet} alt="icone-ticket" className="w-5 h-5 shrink-0" />
-                                        <p className="text-sm font-semibold ml-1">
-                                            {ticket.type_ticket?.libelle} x {ticket.nombre_ticket_pris}
-                                        </p>
-                                    </div>
+                                <div className="flex flex-wrap gap-x-10 gap-y-1">
+                                    {(() => {
+                                        const saved = localStorage.getItem(`ticket_lignes_${ticket.id}`);
+                                        const lignes = saved ? JSON.parse(saved) : [];
+                                        return lignes.length > 0
+                                            ? lignes.map((l, i) => (
+                                                <div key={i} className="flex items-center gap-1">
+                                                    <img src={billet} alt="icone-ticket" className="w-5 h-5 shrink-0" />
+                                                    <p className="text-sm font-semibold">{l.libelle} x{l.quantite}</p>
+                                                </div>
+                                            ))
+                                            : (
+                                                <div className="flex items-center gap-1">
+                                                    <img src={billet} alt="icone-ticket" className="w-5 h-5 shrink-0" />
+                                                    <p className="text-sm font-semibold">{ticket.type_ticket?.libelle} x {ticket.nombre_ticket_pris}</p>
+                                                </div>
+                                            );
+                                    })()}
                                 </div>
 
                                 <div className="flex items-center mt-5">
@@ -290,11 +281,11 @@ function HistoriqueTicket() {
 
 
                                 <div className="flex flex-col sm:flex-row justify-between gap-2 mt-5">
-                                    <button onClick={() => navigate(`/ticket/${ticket.id}`)} className="px-4 py-2 rounded-sm text-[12px] font-semibold bg-[#4D027A] text-white hover:bg-[#D6ABEB] transition-all w-full sm:w-auto">
+                                    <button onClick={() => navigate(`/ticket/${ticket.id}`)} className="px-4 py-2 rounded-sm text-[12px] font-semibold bg-[#F36B2E] text-white hover:bg-[#D6ABEB] transition-all w-full sm:w-auto">
                                         Voir mon ticket
                                     </button>
 
-                                    <button onClick={() => handleDownload(ticket)} className="px-4 py-2 rounded-sm text-[12px] font-semibold bg-[#4D027A] text-white hover:bg-[#D6ABEB] transition-all w-full sm:w-auto">
+                                    <button onClick={() => handleDownload(ticket)} className="px-4 py-2 rounded-sm text-[12px] font-semibold bg-[#F36B2E] text-white hover:bg-[#D6ABEB] transition-all w-full sm:w-auto">
                                         Télécharger mon ticket
                                     </button>
                                 </div>

@@ -90,7 +90,7 @@ function CardEvenement({ evenement, onUnlike }) {
         ? `À partir de ${Math.min(...listePrix).toLocaleString()} F CFA` : "";
 
     return (
-        <div className="border-[2px] border-black rounded-2xl overflow-hidden hover:shadow-lg transition-all bg-white text-start flex flex-col justify-between">
+        <div className="rounded-2xl shadow-xl overflow-hidden hover:shadow-lg transition-all bg-[#EDE0CE] text-start flex flex-col justify-between">
 
 
             <div
@@ -106,7 +106,7 @@ function CardEvenement({ evenement, onUnlike }) {
 
                 <button
                     onClick={handleLike}
-                    className="absolute top-2 right-2 bg-[#D6ABEB] 
+                    className="absolute top-2 right-2 bg-[#F36B2E] 
                     rounded-full p-1.5 shadow flex items-center gap-1"
                 >
                     {liked ? (
@@ -117,13 +117,19 @@ function CardEvenement({ evenement, onUnlike }) {
                     )}
                 </button>
 
+                {evenement.categories && (
+                    <span className="absolute top-2 left-2 bg-[#C4E7E5] font-bold text-black text-xs px-3 py-1 rounded-full font-medium shadow-sm">
+                        {evenement.categories.libelle}
+                    </span>
+                )}
+
             </div>
 
 
             <div className="p-4 flex flex-col flex-1 justify-between">
                 <div>
 
-                    <h3 id="titre-card" className="text-2xl text-[#9952DE] line-clamp-1">
+                    <h3 id="titre-card" className="text-2xl text-[#F36B2E] line-clamp-1">
                         {evenement.nom}
                     </h3>
 
@@ -159,7 +165,7 @@ function CardEvenement({ evenement, onUnlike }) {
                             <div id="donnees" className="flex justify-end items-center mt-5">
                                 <button
                                     onClick={handleRedirection}
-                                    className="px-4 py-2 rounded-sm text-[12px] font-semibold bg-[#4D027A] text-white hover:bg-[#D6ABEB] transition-all"
+                                    className="px-4 py-2 rounded-sm text-[12px] font-semibold bg-[#F36B2E] text-white"
                                 >
                                     Réserver un ticket
                                 </button>
