@@ -24,7 +24,7 @@ class StoreCategorieRequest extends FormRequest
     {
         return [
             'libelle' => 'required|string|max:255|unique:categories,libelle',
-            'image'   => 'required|string|max:255',
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
         ];
     }
 }

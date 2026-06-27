@@ -10,6 +10,7 @@ use App\Http\Resources\CategorieResource;
 use App\Models\Categorie;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class CategorieController extends Controller
 {
@@ -33,10 +34,14 @@ class CategorieController extends Controller
      */
     public function store(StoreCategorieRequest $request)
     {
-        $categorie = Categorie::create($request->validated());
+        $path = $request->file('image')->store('categories', 'public');
+
+        $categorie = Categorie::create([
+            'libelle' => $request->libelle,
+            'image'   => $path,
+        ]);
 
         $this->invalidateListeCache();
-
 
         return response()->json([
             'success' => true,
@@ -74,19 +79,23 @@ class CategorieController extends Controller
     public function update(UpdateCategorieRequest $request, $id)
     {
         $categorie = Categorie::find($id);
-
         if (!$categorie) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Catégorie non trouvée',
-            ], 404);
+            return response()->json(['success' => false, 'message' => 'Catégorie non trouvée'], 404);
         }
 
-        $categorie->update($request->validated());
+        $data = ['libelle' => $request->libelle];
 
+        if ($request->hasFile('image')) {
+            // Supprimer l'ancienne image
+            if ($categorie->image) {
+                Storage::disk('public')->delete($categorie->image);
+            }
+            $data['image'] = $request->file('image')->store('categories', 'public');
+        }
+
+        $categorie->update($data);
         Cache::forget("categorie.{$id}");
         $this->invalidateListeCache();
-
 
         return response()->json([
             'success' => true,
@@ -94,7 +103,6 @@ class CategorieController extends Controller
             'data'    => new CategorieResource($categorie),
         ]);
     }
-
     /**
      * Remove the specified resource from storage.
      */

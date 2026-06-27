@@ -35,59 +35,79 @@ export default function ShowUtilisateur() {
   }
 
   function getInitiales(nom, prenoms) {
-    const n = nom?.[0] ?? "";
-    const p = prenoms?.[0] ?? "";
-    return (n + p).toUpperCase();
+    return ((nom?.[0] ?? "") + (prenoms?.[0] ?? "")).toUpperCase();
   }
 
-  if (loading) {
+  if (loading)
     return (
-      <div className="flex flex-col gap-6">
-        <p className="text-center text-gray-400 py-20">Chargement...</p>
+      <div
+        className="text-center py-20 font-medium"
+        style={{ color: "#253C96" }}
+      >
+        Chargement...
       </div>
     );
-  }
-
-  if (error) {
+  if (error)
     return (
-      <div className="flex flex-col gap-6">
-        <p className="text-red-500 text-sm">{error}</p>
-      </div>
+      <div className="text-center py-20 text-red-500 text-sm">{error}</div>
     );
-  }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 w-full max-w-4xl mx-auto px-4 md:px-0">
       {/* Header */}
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigate("/admin/utilisateurs")}
-          className="text-gray-400 hover:text-purple-500 transition-colors"
+          className="text-gray-400 hover:text-gray-600 transition-colors text-xl font-bold"
         >
           ←
         </button>
-        <h1 className="text-2xl font-bold text-purple-600 tracking-wide">
-          Détail utilisateur
+        <h1
+          className="text-xl md:text-2xl font-bold tracking-wide"
+          style={{ color: "#F59A1E" }}
+        >
+          Détail participant
         </h1>
       </div>
 
       {/* Carte profil */}
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        <div className="h-24 bg-gradient-to-r from-purple-100 to-teal-50" />
-        <div className="px-6 pb-6">
-          <div className="flex items-end gap-4 -mt-10 mb-6">
-            <div className="w-20 h-20 rounded-2xl bg-purple-600 flex items-center justify-center text-white text-2xl font-bold border-4 border-white shadow-sm">
+        <div
+          className="h-20 sm:h-24"
+          style={{ background: "linear-gradient(to right, #EEF1FB, #e0f2fe)" }}
+        />
+        <div className="px-4 sm:px-6 pb-6">
+          <div className="flex flex-col sm:flex-row sm:items-end gap-3 sm:gap-4 -mt-8 sm:-mt-10 mb-6">
+            <div
+              className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center text-white text-xl sm:text-2xl font-bold border-4 border-white shadow-sm flex-shrink-0"
+              style={{ backgroundColor: "#F59A1E" }}
+            >
               {getInitiales(utilisateur?.nom, utilisateur?.prenoms)}
             </div>
             <div className="pb-1">
-              <p className="text-xl font-bold text-gray-800">
+              <p className="text-lg sm:text-xl font-bold text-gray-800">
                 {utilisateur?.prenoms} {utilisateur?.nom}
               </p>
               <p className="text-sm text-gray-400">{utilisateur?.email}</p>
             </div>
+            <div className="sm:ml-auto">
+              <button
+                onClick={() => navigate(`/admin/utilisateurs/${id}/edit`)}
+                className="px-4 py-2 text-sm font-semibold text-white rounded-lg transition-colors"
+                style={{ backgroundColor: "#F59A1E" }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#d4841a")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#F59A1E")
+                }
+              >
+                Modifier
+              </button>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <InfoCard label="Nom" value={utilisateur?.nom} />
             <InfoCard label="Prénoms" value={utilisateur?.prenoms} />
             <InfoCard label="Email" value={utilisateur?.email} />
@@ -103,11 +123,7 @@ export default function ShowUtilisateur() {
                 label="Inscrit le"
                 value={new Date(utilisateur.created_at).toLocaleDateString(
                   "fr-FR",
-                  {
-                    day: "2-digit",
-                    month: "long",
-                    year: "numeric",
-                  },
+                  { day: "2-digit", month: "long", year: "numeric" },
                 )}
               />
             )}
@@ -118,8 +134,11 @@ export default function ShowUtilisateur() {
       {/* Évènements aimés */}
       {utilisateur?.evenements_aimes?.length > 0 && (
         <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-100">
-            <h2 className="text-sm font-semibold text-purple-600 uppercase tracking-wide">
+          <div className="px-4 sm:px-6 py-4 border-b border-gray-100">
+            <h2
+              className="text-sm font-semibold uppercase tracking-wide"
+              style={{ color: "#253C96" }}
+            >
               Évènements aimés
             </h2>
           </div>
@@ -127,23 +146,25 @@ export default function ShowUtilisateur() {
             {utilisateur.evenements_aimes.map((ev) => (
               <li
                 key={ev.id}
-                className="px-6 py-4 flex items-center justify-between hover:bg-purple-50 transition-colors"
+                className="px-4 sm:px-6 py-4 flex items-center justify-between gap-2 transition-colors"
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#EEF1FB")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.backgroundColor = "transparent")
+                }
               >
-                <span className="text-sm font-medium text-gray-700">
+                <span className="text-sm font-medium text-gray-700 truncate">
                   {ev.titre ?? ev.nom ?? `Évènement #${ev.id}`}
                 </span>
-                <div className="flex items-center gap-4">
-                  {utilisateur?.telephone && (
-                    <span className="text-xs text-gray-400">
-                      {utilisateur.telephone}
-                    </span>
-                  )}
-                  <span className="text-xs text-teal-500 font-semibold">
-                    {ev.date_debut
-                      ? new Date(ev.date_debut).toLocaleDateString("fr-FR")
-                      : ""}
+                {ev.date_debut && (
+                  <span
+                    className="text-xs font-semibold flex-shrink-0"
+                    style={{ color: "#253C96" }}
+                  >
+                    {new Date(ev.date_debut).toLocaleDateString("fr-FR")}
                   </span>
-                </div>
+                )}
               </li>
             ))}
           </ul>
@@ -156,15 +177,19 @@ export default function ShowUtilisateur() {
 function InfoCard({ label, value, highlight }) {
   return (
     <div
-      className={`rounded-lg px-4 py-3 border ${
-        highlight ? "border-teal-100 bg-teal-50" : "border-gray-100 bg-gray-50"
-      }`}
+      className="rounded-lg px-4 py-3 border"
+      style={
+        highlight
+          ? { backgroundColor: "#EEF1FB", borderColor: "#253C96" }
+          : { backgroundColor: "#f9fafb", borderColor: "#f3f4f6" }
+      }
     >
       <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">
         {label}
       </p>
       <p
-        className={`text-sm font-semibold ${highlight ? "text-teal-600" : "text-gray-700"}`}
+        className="text-sm font-semibold"
+        style={{ color: highlight ? "#253C96" : "#374151" }}
       >
         {value ?? "—"}
       </p>
