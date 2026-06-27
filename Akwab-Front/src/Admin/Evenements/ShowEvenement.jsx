@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 export default function ShowEvenement() {
   const { id } = useParams();
@@ -13,9 +14,7 @@ export default function ShowEvenement() {
     async function fetchEvenement() {
       try {
         const res = await fetch(`http://127.0.0.1:8000/api/evenements/${id}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
         const data = await res.json();
         setEvenement(data.data || data);
@@ -30,26 +29,49 @@ export default function ShowEvenement() {
   }, [id]);
 
   async function handleDelete() {
-    if (!confirm("Supprimer cet événement ?")) return;
+    const result = await Swal.fire({
+      title: "Supprimer cet événement ?",
+      text: "Cette action est irréversible.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#F59A1E",
+      cancelButtonColor: "#253C96",
+      confirmButtonText: "Oui, supprimer",
+      cancelButtonText: "Annuler",
+    });
+    if (!result.isConfirmed) return;
     try {
       const res = await fetch(`http://127.0.0.1:8000/api/evenements/${id}`, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       const data = await res.json();
       if (data.success || res.ok) {
+        await Swal.fire({
+          title: "Supprimé !",
+          icon: "success",
+          confirmButtonColor: "#F59A1E",
+          timer: 1500,
+          showConfirmButton: false,
+        });
         navigate("/admin/evenements");
       }
     } catch {
-      alert("Erreur lors de la suppression.");
+      Swal.fire({
+        title: "Erreur",
+        text: "Erreur lors de la suppression.",
+        icon: "error",
+        confirmButtonColor: "#253C96",
+      });
     }
   }
 
   if (loading)
     return (
-      <div className="text-center py-16 text-purple-500 font-medium">
+      <div
+        className="text-center py-16 font-medium"
+        style={{ color: "#253C96" }}
+      >
         Chargement...
       </div>
     );
@@ -77,15 +99,20 @@ export default function ShowEvenement() {
     ) ?? 0;
 
   return (
-    <div className="flex flex-col gap-6 max-w-4xl p-4 md:p-0">
+    <div className="flex flex-col gap-6 max-w-4xl w-full mx-auto px-4 md:px-0">
+      {/* Retour */}
       <button
         onClick={() => navigate("/admin/evenements")}
-        className="flex items-center gap-2 text-sm text-gray-400 hover:text-purple-500 transition-colors w-fit"
+        className="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-600 transition-colors w-fit"
       >
-        Retour aux événements
+        ← Retour aux événements
       </button>
 
-      <div className="w-full h-64 rounded-xl overflow-hidden bg-purple-50 relative flex items-center justify-center">
+      {/* Image hero */}
+      <div
+        className="w-full h-48 sm:h-64 rounded-xl overflow-hidden relative flex items-center justify-center"
+        style={{ backgroundColor: "#EEF1FB" }}
+      >
         {ev.image ? (
           <img
             src={ev.image}
@@ -99,34 +126,45 @@ export default function ShowEvenement() {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="w-16 h-16 text-purple-300"
+            className="w-16 h-16"
+            style={{ color: "#253C96", opacity: 0.3 }}
           >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375 3.75 0 1 1-.75 0 .375 3.75 0 0 1 .75 0Z"
+              d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
             />
           </svg>
         )}
       </div>
 
+      {/* Contenu — colonne sur mobile, grid sur md+ */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Colonne principale */}
         <div className="md:col-span-2 flex flex-col gap-4">
+          {/* Infos générales */}
           <div className="bg-white rounded-xl border border-gray-200 p-5">
             {ev.categories && (
-              <span className="inline-block bg-purple-100 text-purple-600 text-xs font-medium px-3 py-1 rounded-full mb-3">
+              <span
+                className="inline-block text-white text-xs font-medium px-3 py-1 rounded-full mb-3"
+                style={{ backgroundColor: "#253C96" }}
+              >
                 {ev.categories.libelle}
               </span>
             )}
-            <h1 className="text-2xl font-bold text-[#4D027A] mb-4">{ev.nom}</h1>
-
+            <h1
+              className="text-xl sm:text-2xl font-bold mb-4"
+              style={{ color: "#253C96" }}
+            >
+              {ev.nom}
+            </h1>
             <div className="flex flex-col gap-3 text-sm text-gray-500">
               {ev.date && (
-                <div className="flex items-center gap-2">
+                <div className="flex items-start gap-2">
                   <img
                     src="/calendar.svg"
                     alt="Calendrier"
-                    className="w-4 h-4 shrink-0"
+                    className="w-4 h-4 shrink-0 mt-0.5"
                   />
                   <span>
                     {new Date(ev.date).toLocaleString("fr-FR", {
@@ -151,8 +189,12 @@ export default function ShowEvenement() {
             </div>
           </div>
 
+          {/* Description */}
           <div className="bg-white rounded-xl border border-gray-200 p-5">
-            <p className="text-xs font-semibold text-purple-500 uppercase tracking-wide mb-3">
+            <p
+              className="text-xs font-semibold uppercase tracking-wide mb-3"
+              style={{ color: "#253C96" }}
+            >
               Description
             </p>
             <p className="text-sm text-gray-600 leading-relaxed">
@@ -160,14 +202,21 @@ export default function ShowEvenement() {
             </p>
           </div>
 
+          {/* Organisateur */}
           {ev.organisateurs && (
             <>
               <div className="bg-white rounded-xl border border-gray-200 p-5">
-                <p className="text-xs font-semibold text-purple-500 uppercase tracking-wide mb-3">
+                <p
+                  className="text-xs font-semibold uppercase tracking-wide mb-3"
+                  style={{ color: "#253C96" }}
+                >
                   Organisateur
                 </p>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold text-sm flex-shrink-0"
+                    style={{ backgroundColor: "#253C96" }}
+                  >
                     {ev.organisateurs.nom?.[0]?.toUpperCase()}
                   </div>
                   <div>
@@ -195,41 +244,69 @@ export default function ShowEvenement() {
           )}
         </div>
 
+        {/* Colonne latérale */}
         <div className="flex flex-col gap-4">
+          {/* Actions */}
           <div className="bg-white rounded-xl border border-gray-200 p-4 flex flex-col gap-2">
             <button
               onClick={() => navigate(`/admin/evenements/${id}/edit`)}
-              className="w-full py-2 bg-purple-600 text-white text-sm font-semibold rounded-lg hover:bg-purple-700 transition-colors shadow-sm"
+              className="w-full py-2.5 text-white text-sm font-semibold rounded-lg transition-colors"
+              style={{ backgroundColor: "#F59A1E" }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor = "#d4841a")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "#F59A1E")
+              }
             >
               Modifier
             </button>
             <button
               onClick={handleDelete}
-              className="w-full py-2 border border-red-200 text-red-500 text-sm font-medium rounded-lg hover:bg-red-50 transition-colors"
+              className="w-full py-2.5 border border-red-200 text-red-500 text-sm font-medium rounded-lg hover:bg-red-50 transition-colors"
             >
               Supprimer
             </button>
           </div>
 
+          {/* Stats */}
           <div className="grid grid-cols-1 gap-2">
-            <div className="bg-teal-50 border border-teal-100 rounded-xl p-4 shadow-sm">
-              <p className="text-xs text-teal-600 font-medium mb-1">
+            <div
+              className="rounded-xl p-4"
+              style={{
+                backgroundColor: "#EEF1FB",
+                border: "1px solid #253C96",
+              }}
+            >
+              <p
+                className="text-xs font-medium mb-1"
+                style={{ color: "#253C96" }}
+              >
                 Gains totaux
               </p>
-              <p className="text-xl font-bold text-teal-700">
+              <p className="text-xl font-bold" style={{ color: "#253C96" }}>
                 {Number(gains).toLocaleString("fr-FR")} FCFA
               </p>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <div className="bg-purple-50 border border-purple-100 rounded-xl p-3 shadow-sm">
-                <p className="text-xs text-purple-600 font-medium mb-1">
+              <div
+                className="rounded-xl p-3"
+                style={{
+                  backgroundColor: "#EEF1FB",
+                  border: "1px solid #253C96",
+                }}
+              >
+                <p
+                  className="text-xs font-medium mb-1"
+                  style={{ color: "#253C96" }}
+                >
                   Restants
                 </p>
-                <p className="text-base font-bold text-purple-700">
+                <p className="text-base font-bold" style={{ color: "#253C96" }}>
                   {totalRestants}
                 </p>
               </div>
-              <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 shadow-sm">
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-3">
                 <p className="text-xs text-gray-500 font-medium mb-1">Vendus</p>
                 <p className="text-base font-bold text-gray-700">
                   {totalVendus}
@@ -238,9 +315,13 @@ export default function ShowEvenement() {
             </div>
           </div>
 
+          {/* Types de tickets */}
           {ev.types_tickets?.length > 0 && (
-            <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
-              <p className="text-xs font-semibold text-purple-500 uppercase tracking-wide mb-3">
+            <div className="bg-white rounded-xl border border-gray-200 p-4">
+              <p
+                className="text-xs font-semibold uppercase tracking-wide mb-3"
+                style={{ color: "#253C96" }}
+              >
                 Types de tickets
               </p>
               <div className="flex flex-col divide-y divide-gray-100">
@@ -255,7 +336,7 @@ export default function ShowEvenement() {
                         ? { label: "Faible", cls: "bg-amber-50 text-amber-700" }
                         : {
                             label: "Disponible",
-                            cls: "bg-teal-50 text-teal-700",
+                            cls: "bg-green-50 text-green-700",
                           };
 
                   return (
@@ -263,8 +344,8 @@ export default function ShowEvenement() {
                       key={i}
                       className="py-2.5 flex justify-between items-center gap-2"
                     >
-                      <div>
-                        <p className="text-sm font-medium text-gray-700">
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-gray-700 truncate">
                           {t.libelle}
                         </p>
                         <p className="text-xs text-gray-400">
@@ -289,9 +370,13 @@ export default function ShowEvenement() {
             </div>
           )}
 
+          {/* Détails du lieu */}
           {ev.lieux && (
-            <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
-              <p className="text-xs font-semibold text-purple-500 uppercase tracking-wide mb-3">
+            <div className="bg-white rounded-xl border border-gray-200 p-4">
+              <p
+                className="text-xs font-semibold uppercase tracking-wide mb-3"
+                style={{ color: "#253C96" }}
+              >
                 Détails du lieu
               </p>
               <p className="text-sm font-medium text-gray-800">

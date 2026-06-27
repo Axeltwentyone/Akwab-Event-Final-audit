@@ -105,16 +105,19 @@ export default function UpdateLieux() {
     );
 
   return (
-    <div className="flex flex-col items-center min-h-[80vh] px-4 py-8 w-full">
+    <div className="flex flex-col items-center min-h-[80vh] px-4 py-6 md:py-12 w-full">
       <div className="flex flex-col gap-6 max-w-xl w-full">
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate(`/admin/lieux/${id}`)}
-            className="text-gray-400 hover:text-purple-500 transition-colors"
+            className="text-gray-400 hover:text-gray-600 transition-colors text-xl font-bold flex-shrink-0"
           >
             ←
           </button>
-          <h1 className="text-xl sm:text-2xl font-bold text-purple-600 tracking-wide">
+          <h1
+            className="text-xl sm:text-2xl font-bold tracking-wide"
+            style={{ color: "#253C96" }}
+          >
             Modifier le lieu
           </h1>
         </div>
@@ -133,7 +136,7 @@ export default function UpdateLieux() {
         <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
           <form
             onSubmit={handleSubmit}
-            className="px-6 py-6 flex flex-col gap-4"
+            className="px-4 sm:px-6 py-5 flex flex-col gap-4"
           >
             <Field
               label="Nom du lieu"
@@ -160,18 +163,32 @@ export default function UpdateLieux() {
               required
             />
 
-            <div className="flex items-center justify-end gap-3 pt-2">
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-between gap-3 pt-2">
               <button
                 type="button"
                 onClick={() => navigate(`/admin/lieux/${id}`)}
-                className="px-4 py-2 text-sm text-gray-500 hover:text-gray-700 font-medium transition-colors"
+                className="w-full sm:w-auto px-4 py-2.5 text-sm font-medium rounded-lg border transition-colors text-center"
+                style={{ color: "#253C96", borderColor: "#253C96" }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#EEF1FB")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.backgroundColor = "transparent")
+                }
               >
                 Annuler
               </button>
               <button
                 type="submit"
                 disabled={saving}
-                className="px-5 py-2 bg-purple-600 text-white text-sm font-semibold rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50"
+                className="w-full sm:w-auto px-5 py-2.5 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-50"
+                style={{ backgroundColor: "#F59A1E" }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#d4841a")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#F59A1E")
+                }
               >
                 {saving ? "Enregistrement..." : "Enregistrer"}
               </button>
@@ -181,22 +198,24 @@ export default function UpdateLieux() {
       </div>
     </div>
   );
-}
 
-function Field({ label, name, value, onChange, error, required }) {
-  return (
-    <div className="flex flex-col gap-1">
-      <label className="text-xs text-gray-500 font-medium uppercase tracking-wide">
-        {label} {required && <span className="text-red-400">*</span>}
-      </label>
-      <input
-        name={name}
-        type="text"
-        value={value}
-        onChange={onChange}
-        className={`border rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-300 transition-colors ${error ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"}`}
-      />
-      {error && <p className="text-xs text-red-500">{error}</p>}
-    </div>
-  );
+  function Field({ label, name, value, onChange, error, required }) {
+    return (
+      <div className="flex flex-col gap-1.5">
+        <label className="text-xs text-gray-500 font-medium uppercase tracking-wide">
+          {label} {required && <span className="text-red-400">*</span>}
+        </label>
+        <input
+          name={name}
+          type="text"
+          value={value}
+          onChange={onChange}
+          className={`border rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 transition-colors ${
+            error ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
+          }`}
+        />
+        {error && <p className="text-xs text-red-500">{error}</p>}
+      </div>
+    );
+  }
 }

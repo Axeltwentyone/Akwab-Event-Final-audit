@@ -18,7 +18,6 @@ export default function ShowTicket() {
 
   const headers = { Authorization: `Bearer ${localStorage.getItem("token")}` };
 
-
   useEffect(() => {
     async function loadEvenement() {
       setLoadingEv(true);
@@ -93,7 +92,7 @@ export default function ShowTicket() {
   if (loadingEv)
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <p className="text-purple-500 font-medium">Chargement...</p>
+        <p className="text[#F59A1E] font-medium">Chargement...</p>
       </div>
     );
 
@@ -102,7 +101,7 @@ export default function ShowTicket() {
       <div className="flex flex-col gap-4 p-4 max-w-xl mx-auto">
         <button
           onClick={() => navigate("/admin/tickets")}
-          className="text-gray-400 hover:text-purple-500 w-fit text-sm"
+          className="text-gray-400  w-fit text-sm"
         >
           ← Retour
         </button>
@@ -117,17 +116,20 @@ export default function ShowTicket() {
   const vendus = total - restants;
 
   return (
-    <div className="flex flex-col gap-6 p-4 md:p-6 max-w-7xl mx-auto w-full">
+    <div className="flex flex-col gap-6 w-full max-w-7xl mx-auto px-4 md:px-0">
       {/* Header */}
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigate("/admin/tickets")}
-          className="text-gray-400 hover:text-purple-500 transition-colors"
+          className="text-gray-400 hover:text-gray-600 transition-colors text-xl font-bold shrink-0"
         >
           ←
         </button>
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-purple-600 tracking-wide">
+        <div className="min-w-0">
+          <h1
+            className="text-lg sm:text-2xl font-bold tracking-wide truncate"
+            style={{ color: "#F59A1E  " }}
+          >
             {evenement?.nom ?? "Détails tickets"}
           </h1>
           <p className="text-sm text-gray-400 mt-0.5">
@@ -138,10 +140,16 @@ export default function ShowTicket() {
         </div>
       </div>
 
-  
+      {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-linear-to-br from-purple-600 to-[#4D027A] rounded-xl p-5 text-white">
-          <p className="text-xs text-purple-200 uppercase tracking-wide font-medium mb-1">
+        <div
+          className="rounded-xl p-5 text-white bg-[#F59A1E]"
+
+        >
+          <p
+            className="text-xs uppercase tracking-wide font-medium mb-1"
+            style={{ color: "rgba(255,255,255,0.7)" }}
+          >
             Gains totaux
           </p>
           <p className="text-2xl font-bold">{formatMontant(gainsTotal)}</p>
@@ -150,7 +158,9 @@ export default function ShowTicket() {
           <p className="text-xs text-gray-400 uppercase tracking-wide font-medium mb-1">
             Tickets vendus
           </p>
-          <p className="text-2xl font-bold text-[#4D027A]">{vendus}</p>
+          <p className="text-2xl font-bold" style={{ color: "#253C96" }}>
+            {vendus}
+          </p>
           <p className="text-xs text-gray-400 mt-1">sur {total} au total</p>
         </div>
         <div className="bg-white border border-gray-200 rounded-xl p-5">
@@ -174,11 +184,14 @@ export default function ShowTicket() {
         </div>
       </div>
 
-     
+      {/* Types de tickets */}
       {evenement?.types_tickets?.length > 0 && (
         <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
           <div className="px-5 py-3 border-b border-gray-100 bg-gray-50">
-            <p className="text-xs font-semibold text-purple-500 uppercase tracking-wide">
+            <p
+              className="text-xs font-semibold uppercase tracking-wide"
+              style={{ color: "#253C96" }}
+            >
               Types de tickets
             </p>
           </div>
@@ -230,16 +243,17 @@ export default function ShowTicket() {
         </div>
       )}
 
-     
+      {/* Acheteurs */}
       <div className="flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <p className="text-sm font-semibold text-gray-700">
-            Acheteurs ({totalItems})
-          </p>
-        </div>
+        <p className="text-sm font-semibold" style={{ color: "#253C96" }}>
+          Acheteurs ({totalItems})
+        </p>
 
         {loadingTickets ? (
-          <div className="text-center py-12 text-purple-500 font-medium">
+          <div
+            className="text-center py-12 font-medium"
+            style={{ color: "#253C96" }}
+          >
             Chargement...
           </div>
         ) : tickets.length === 0 ? (
@@ -248,7 +262,7 @@ export default function ShowTicket() {
           </div>
         ) : (
           <>
-            {/* Tableau desktop */}
+            {/* TABLE — md et plus */}
             <div className="hidden md:block bg-white rounded-xl border border-gray-200 overflow-hidden">
               <table className="w-full text-sm">
                 <thead>
@@ -266,7 +280,7 @@ export default function ShowTicket() {
                       Qté
                     </th>
                     <th className="px-5 py-3 text-xs text-gray-500 font-medium uppercase tracking-wide text-right">
-                      Montant Payé
+                      Montant payé
                     </th>
                     <th className="px-5 py-3 text-xs text-gray-500 font-medium uppercase tracking-wide">
                       Date
@@ -277,9 +291,18 @@ export default function ShowTicket() {
                   {tickets.map((t) => (
                     <tr
                       key={t.id}
-                      className="border-b border-gray-50 last:border-0 hover:bg-purple-50/30 transition-colors"
+                      className="border-b border-gray-50 last:border-0 transition-colors"
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.backgroundColor = "#EEF1FB")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.backgroundColor = "transparent")
+                      }
                     >
-                      <td className="px-5 py-3 text-[#4D027A] font-medium text-xs whitespace-nowrap">
+                      <td
+                        className="px-5 py-3 font-medium text-xs whitespace-nowrap"
+                        style={{ color: "#253C96" }}
+                      >
                         {t.numero_ticket}
                       </td>
                       <td className="px-5 py-3 text-gray-700">
@@ -310,6 +333,7 @@ export default function ShowTicket() {
               </table>
             </div>
 
+            {/* CARDS — mobile */}
             <div className="flex flex-col gap-3 md:hidden">
               {tickets.map((t) => (
                 <div
@@ -317,7 +341,10 @@ export default function ShowTicket() {
                   className="bg-white rounded-xl border border-gray-200 p-4 flex flex-col gap-2"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-[#4D027A]">
+                    <span
+                      className="text-xs font-semibold"
+                      style={{ color: "#253C96" }}
+                    >
                       {t.numero_ticket}
                     </span>
                     <span className="text-xs text-gray-400">
@@ -337,7 +364,10 @@ export default function ShowTicket() {
                       {t.type_ticket?.libelle ?? "—"} · Qté{" "}
                       {t.nombre_ticket_pris}
                     </span>
-                    <span className="text-sm font-bold text-purple-600">
+                    <span
+                      className="text-sm font-bold"
+                      style={{ color: "#253C96" }}
+                    >
                       {formatMontant(t.prix_total)}
                     </span>
                   </div>
@@ -345,12 +375,22 @@ export default function ShowTicket() {
               ))}
             </div>
 
+            {/* Pagination */}
             {totalPages > 1 && (
               <div className="flex items-center justify-center sm:justify-end gap-2 pt-4 border-t border-gray-100">
                 <button
                   onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
                   disabled={currentPage === 1}
-                  className="px-3 py-1.5 text-sm font-medium rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  className="px-3 py-1.5 text-sm font-medium rounded-lg border text-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  style={{ backgroundColor: "#253C96", borderColor: "#253C96" }}
+                  onMouseEnter={(e) => {
+                    if (!e.currentTarget.disabled)
+                      e.currentTarget.style.backgroundColor = "#1a2d75";
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!e.currentTarget.disabled)
+                      e.currentTarget.style.backgroundColor = "#253C96";
+                  }}
                 >
                   Précédent
                 </button>
@@ -362,7 +402,16 @@ export default function ShowTicket() {
                     setCurrentPage((p) => Math.min(p + 1, totalPages))
                   }
                   disabled={currentPage === totalPages}
-                  className="px-3 py-1.5 text-sm font-medium rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  className="px-3 py-1.5 text-sm font-medium rounded-lg border text-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  style={{ backgroundColor: "#253C96", borderColor: "#253C96" }}
+                  onMouseEnter={(e) => {
+                    if (!e.currentTarget.disabled)
+                      e.currentTarget.style.backgroundColor = "#1a2d75";
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!e.currentTarget.disabled)
+                      e.currentTarget.style.backgroundColor = "#253C96";
+                  }}
                 >
                   Suivant
                 </button>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+
 export default function CreateOrganisateur() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
@@ -52,7 +53,7 @@ export default function CreateOrganisateur() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-bold text-purple-600 tracking-wide text-center">
+      <h1 className="text-2xl font-bold text-[#F59A1E] tracking-wide text-center">
         Nouvel organisateur
       </h1>
 
@@ -119,14 +120,14 @@ export default function CreateOrganisateur() {
             <button
               type="button"
               onClick={() => navigate("/Admin/organisateurs")}
-              className="px-4 py-2 text-sm text-purple-600 font-medium border border-purple-200 rounded-lg hover:bg-purple-50 transition-colors"
+              className="px-4 py-2 text-sm text-[#F59A1E] font-medium border border-purple-200 rounded-lg hover:bg-purple-50 transition-colors"
             >
               Retour
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="px-5 py-2 bg-purple-600 text-white text-sm font-semibold rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50"
+              className="px-5 py-2 bg-[#F59A1E] text-white text-sm font-semibold rounded-lg  transition-colors disabled:opacity-50"
             >
               {saving ? "Création..." : "Créer"}
             </button>

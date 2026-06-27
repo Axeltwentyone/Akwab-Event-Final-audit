@@ -106,9 +106,13 @@ export default function ListTickets() {
   }
 
   return (
-    <div className="flex flex-col gap-6 p-4 md:p-6 max-w-7xl mx-auto w-full">
+    <div className="flex flex-col gap-5 w-full max-w-7xl mx-auto">
+      {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-purple-600 tracking-wide">
+        <h1
+          className="text-2xl font-bold tracking-wide"
+          style={{ color: "#F59A1E" }}
+        >
           Tickets
         </h1>
         <p className="text-sm text-gray-400 mt-1">
@@ -122,7 +126,8 @@ export default function ListTickets() {
         placeholder="Rechercher un événement..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="border border-[#4D027A] rounded-lg px-4 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-300 w-full shadow-sm"
+        className="border rounded-lg px-4 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 w-full transition-colors"
+        style={{ borderColor: "#253C96" }}
       />
 
       {error && (
@@ -132,12 +137,15 @@ export default function ListTickets() {
       )}
 
       {loading ? (
-        <div className="text-center py-16 text-purple-500 font-medium">
+        <div
+          className="text-center py-16 font-medium"
+          style={{ color: "#F59A1E" }}
+        >
           Chargement...
         </div>
       ) : (
         <>
-          {/* Tableau desktop */}
+          {/* TABLE — md et plus */}
           <div className="hidden md:block bg-white rounded-xl border border-gray-200 overflow-hidden">
             <table className="w-full text-sm">
               <thead>
@@ -184,10 +192,20 @@ export default function ListTickets() {
                     return (
                       <tr
                         key={ev.id_evenement}
-                        className="border-b border-gray-50 last:border-0 hover:bg-purple-50/30 transition-colors"
+                        className="border-b border-gray-50 last:border-0 transition-colors"
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.backgroundColor = "#EEF1FB")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.style.backgroundColor =
+                            "transparent")
+                        }
                       >
                         <td className="px-5 py-4">
-                          <p className="font-semibold text-[#4D027A]">
+                          <p
+                            className="font-semibold"
+                            style={{ color: "#253C96" }}
+                          >
                             {ev.nom}
                           </p>
                           <p className="text-xs text-gray-400 mt-0.5">
@@ -220,7 +238,10 @@ export default function ListTickets() {
                         <td className="px-5 py-4 text-center text-gray-500">
                           {total}
                         </td>
-                        <td className="px-5 py-4 text-right font-semibold text-[#4D027A] whitespace-nowrap">
+                        <td
+                          className="px-5 py-4 text-right font-semibold whitespace-nowrap"
+                          style={{ color: "#253C96" }}
+                        >
                           {gainsMap[ev.id_evenement] !== undefined ? (
                             formatMontant(gainsMap[ev.id_evenement])
                           ) : (
@@ -232,7 +253,19 @@ export default function ListTickets() {
                             onClick={() =>
                               navigate(`/admin/tickets/${ev.id_evenement}`)
                             }
-                            className="text-xs px-3 py-1.5 border border-[#05CDC2] rounded-lg text-[#05CDC2] hover:bg-[#05CDC2]/10 font-medium transition-colors"
+                            className="text-xs px-3 py-1.5 rounded-lg border font-medium transition-colors text-white"
+                            style={{
+                              backgroundColor: "#F59A1E",
+                              borderColor: "#253C96",
+                            }}
+                            onMouseEnter={(e) =>
+                              (e.currentTarget.style.backgroundColor =
+                                "#1a2d75")
+                            }
+                            onMouseLeave={(e) =>
+                              (e.currentTarget.style.backgroundColor =
+                                "#253C96")
+                            }
                           >
                             Voir tickets
                           </button>
@@ -245,6 +278,7 @@ export default function ListTickets() {
             </table>
           </div>
 
+          {/* CARDS — mobile */}
           <div className="flex flex-col gap-3 md:hidden">
             {evenements.length === 0 ? (
               <div className="text-center py-12 text-gray-400 bg-white rounded-xl border border-gray-200">
@@ -268,8 +302,13 @@ export default function ListTickets() {
                     className="bg-white rounded-xl border border-gray-200 p-4 flex flex-col gap-3"
                   >
                     <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <p className="font-bold text-[#4D027A]">{ev.nom}</p>
+                      <div className="min-w-0">
+                        <p
+                          className="font-bold truncate"
+                          style={{ color: "#253C96" }}
+                        >
+                          {ev.nom}
+                        </p>
                         <p className="text-xs text-gray-400 mt-0.5">
                           {ev.lieux
                             ? `${ev.lieux.nom} — ${ev.lieux.ville}`
@@ -277,7 +316,13 @@ export default function ListTickets() {
                         </p>
                       </div>
                       {gainsMap[ev.id_evenement] !== undefined && (
-                        <span className="text-xs font-bold text-[#4D027A] whitespace-nowrap bg-purple-50 px-2 py-1 rounded-lg">
+                        <span
+                          className="text-xs font-bold whitespace-nowrap px-2 py-1 rounded-lg flex-shrink-0"
+                          style={{
+                            color: "#253C96",
+                            backgroundColor: "#EEF1FB",
+                          }}
+                        >
                           {formatMontant(gainsMap[ev.id_evenement])}
                         </span>
                       )}
@@ -297,7 +342,17 @@ export default function ListTickets() {
                       onClick={() =>
                         navigate(`/admin/tickets/${ev.id_evenement}`)
                       }
-                      className="w-full text-xs py-2 border border-[#05CDC2] rounded-lg text-[#05CDC2] hover:bg-[#05CDC2]/10 font-medium transition-colors"
+                      className="w-full text-xs py-2.5 rounded-lg border font-medium transition-colors text-white"
+                      style={{
+                        backgroundColor: "#253C96",
+                        borderColor: "#253C96",
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.backgroundColor = "#1a2d75")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.backgroundColor = "#253C96")
+                      }
                     >
                       Voir tickets
                     </button>
@@ -307,12 +362,22 @@ export default function ListTickets() {
             )}
           </div>
 
+          {/* Pagination */}
           {totalPages > 1 && (
             <div className="flex items-center justify-center sm:justify-end gap-2 pt-4 border-t border-gray-100">
               <button
                 onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
                 disabled={currentPage === 1}
-                className="px-3 py-1.5 text-sm font-medium rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="px-3 py-1.5 text-sm font-medium rounded-lg border text-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                style={{ backgroundColor: "#253C96", borderColor: "#253C96" }}
+                onMouseEnter={(e) => {
+                  if (!e.currentTarget.disabled)
+                    e.currentTarget.style.backgroundColor = "#1a2d75";
+                }}
+                onMouseLeave={(e) => {
+                  if (!e.currentTarget.disabled)
+                    e.currentTarget.style.backgroundColor = "#253C96";
+                }}
               >
                 Précédent
               </button>
@@ -324,7 +389,16 @@ export default function ListTickets() {
                   setCurrentPage((p) => Math.min(p + 1, totalPages))
                 }
                 disabled={currentPage === totalPages}
-                className="px-3 py-1.5 text-sm font-medium rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="px-3 py-1.5 text-sm font-medium rounded-lg border text-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                style={{ backgroundColor: "#253C96", borderColor: "#253C96" }}
+                onMouseEnter={(e) => {
+                  if (!e.currentTarget.disabled)
+                    e.currentTarget.style.backgroundColor = "#1a2d75";
+                }}
+                onMouseLeave={(e) => {
+                  if (!e.currentTarget.disabled)
+                    e.currentTarget.style.backgroundColor = "#253C96";
+                }}
               >
                 Suivant
               </button>
