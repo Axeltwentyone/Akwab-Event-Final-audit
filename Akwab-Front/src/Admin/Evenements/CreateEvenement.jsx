@@ -22,7 +22,6 @@ export default function CreateEvenement() {
   const [lieux, setLieux] = useState([]);
   const [categories, setCategories] = useState([]);
   const [organisateurs, setOrganisateurs] = useState([]);
-  const [typesTickets, setTypesTickets] = useState([]);
 
   const [form, setForm] = useState({
     nom: "",
@@ -34,7 +33,6 @@ export default function CreateEvenement() {
   });
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-
   const [tickets, setTickets] = useState([emptyTicket()]);
 
   useEffect(() => {
@@ -42,16 +40,14 @@ export default function CreateEvenement() {
       const token = localStorage.getItem("token");
       const headers = { Authorization: `Bearer ${token}` };
       try {
-        const [lieuxRes, catsRes, orgsRes, ttRes] = await Promise.all([
+        const [lieuxRes, catsRes, orgsRes] = await Promise.all([
           fetch("/api/lieux", { headers }).then((r) => r.json()),
           fetch("/api/categories", { headers }).then((r) => r.json()),
           fetch("/api/organisateurs", { headers }).then((r) => r.json()),
-         
         ]);
         setLieux(lieuxRes.data || lieuxRes);
         setCategories(catsRes.data || catsRes);
         setOrganisateurs(orgsRes.data || orgsRes);
-  
       } catch {
         setError("Impossible de charger les options.");
       }
@@ -114,11 +110,6 @@ export default function CreateEvenement() {
     setSaving(true);
     setError("");
 
-    const totalTicketsEvenement = tickets.reduce(
-      (sum, ticket) => sum + (Number(ticket.quantite_type_ticket) || 0),
-      0,
-    );
-
     const fd = new FormData();
     fd.append("nom", form.nom);
     fd.append("description", form.description);
@@ -140,8 +131,6 @@ export default function CreateEvenement() {
         body: fd,
       });
       const data = await res.json();
-      console.log("STATUS:", res.status);
-      console.log("RESPONSE:", data);
       if (data.success) {
         navigate("/admin/evenements");
       } else if (data.errors) {
@@ -150,8 +139,7 @@ export default function CreateEvenement() {
       } else {
         setError(data.message ?? "Erreur lors de la création.");
       }
-    } catch (err) {
-      console.error("FETCH ERROR:", err);
+    } catch {
       setError("Impossible de contacter le serveur.");
     } finally {
       setSaving(false);
@@ -159,7 +147,8 @@ export default function CreateEvenement() {
   }
 
   return (
-    <div className="flex flex-col gap-6 max-w-2xl">
+    <div className="flex flex-col gap-6 w-full max-w-2xl mx-auto px-4 md:px-0">
+      {/* Header */}
       <div className="flex items-center gap-3">
         <button
           onClick={() =>
@@ -167,15 +156,19 @@ export default function CreateEvenement() {
               ? setStep(STEP_INFO)
               : navigate("/admin/evenements")
           }
-          className="text-gray-400 hover:text-purple-500 transition-colors"
+          className="text-gray-400 hover:text-gray-600 transition-colors text-xl font-bold"
         >
           ←
         </button>
-        <h1 className="text-2xl font-bold text-purple-600 tracking-wide">
+        <h1
+          className="text-xl md:text-2xl font-bold tracking-wide"
+          style={{ color: "#253C96" }}
+        >
           Créer un événement
         </h1>
       </div>
 
+      {/* Stepper */}
       <div className="flex items-center gap-0">
         {[
           { num: 1, label: "Informations" },
@@ -184,27 +177,25 @@ export default function CreateEvenement() {
           <div key={s.num} className="flex items-center flex-1 last:flex-none">
             <div className="flex items-center gap-2">
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors ${
-                  step >= s.num
-                    ? "bg-purple-600 text-white"
-                    : "bg-gray-100 text-gray-400"
-                }`}
+                className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors text-white"
+                style={{
+                  backgroundColor: step >= s.num ? "#253C96" : "#e5e7eb",
+                  color: step >= s.num ? "white" : "#9ca3af",
+                }}
               >
                 {step > s.num ? "✓" : s.num}
               </div>
               <span
-                className={`text-sm font-medium ${
-                  step >= s.num ? "text-purple-600" : "text-gray-400"
-                }`}
+                className="text-sm font-medium hidden sm:block"
+                style={{ color: step >= s.num ? "#253C96" : "#9ca3af" }}
               >
                 {s.label}
               </span>
             </div>
             {i === 0 && (
               <div
-                className={`flex-1 h-0.5 mx-3 transition-colors ${
-                  step > 1 ? "bg-purple-600" : "bg-gray-200"
-                }`}
+                className="flex-1 h-0.5 mx-3 transition-colors"
+                style={{ backgroundColor: step > 1 ? "#253C96" : "#e5e7eb" }}
               />
             )}
           </div>
@@ -218,11 +209,13 @@ export default function CreateEvenement() {
       )}
 
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        {/* ── STEP 1 : Informations ── */}
         {step === STEP_INFO && (
           <>
             <SectionTitle>Informations de l'événement</SectionTitle>
-            <div className="px-6 pt-4 pb-6 flex flex-col gap-4">
-              <div className="flex flex-col gap-1">
+            <div className="px-4 sm:px-6 pt-4 pb-6 flex flex-col gap-4">
+              {/* Image upload */}
+              <div className="flex flex-col gap-1.5">
                 <label className="text-xs text-gray-500 font-medium uppercase tracking-wide">
                   Image <span className="text-red-400">*</span>
                 </label>
@@ -231,8 +224,19 @@ export default function CreateEvenement() {
                   className={`border-2 border-dashed rounded-xl h-36 flex flex-col items-center justify-center cursor-pointer transition-colors overflow-hidden ${
                     fieldErrors.image
                       ? "border-red-300 bg-red-50"
-                      : "border-gray-200 bg-gray-50 hover:border-purple-300"
+                      : "border-gray-200 bg-gray-50"
                   }`}
+                  style={
+                    !fieldErrors.image ? { "--hover-border": "#253C96" } : {}
+                  }
+                  onMouseEnter={(e) => {
+                    if (!fieldErrors.image)
+                      e.currentTarget.style.borderColor = "#253C96";
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!fieldErrors.image)
+                      e.currentTarget.style.borderColor = "#e5e7eb";
+                  }}
                 >
                   {imagePreview ? (
                     <img
@@ -242,7 +246,7 @@ export default function CreateEvenement() {
                     />
                   ) : (
                     <>
-                      <span className="text-2xl mb-1">+</span>
+                      <span className="text-2xl mb-1 text-gray-400">+</span>
                       <span className="text-xs text-gray-400">
                         Ajouter une image
                       </span>
@@ -270,7 +274,7 @@ export default function CreateEvenement() {
                 required
               />
 
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-1.5">
                 <label className="text-xs text-gray-500 font-medium uppercase tracking-wide">
                   Description <span className="text-red-400">*</span>
                 </label>
@@ -279,7 +283,7 @@ export default function CreateEvenement() {
                   value={form.description}
                   onChange={handleChange}
                   rows={3}
-                  className={`border rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-300 resize-none transition-colors ${
+                  className={`border rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 resize-none transition-colors ${
                     fieldErrors.description
                       ? "border-red-300 bg-red-50"
                       : "border-gray-200"
@@ -302,7 +306,7 @@ export default function CreateEvenement() {
                 required
               />
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <SelectField
                   label="Lieu"
                   name="id_lieu"
@@ -318,7 +322,6 @@ export default function CreateEvenement() {
                     </option>
                   ))}
                 </SelectField>
-
                 <SelectField
                   label="Catégorie"
                   name="id_categorie"
@@ -356,10 +359,30 @@ export default function CreateEvenement() {
               </SelectField>
             </div>
 
-            <div className="px-6 py-4 border-t border-gray-100 bg-gray-50 flex justify-end">
+            <div className="px-4 sm:px-6 py-4 border-t border-gray-100 bg-gray-50 flex flex-col-reverse sm:flex-row gap-3 sm:justify-between">
+              <button
+                onClick={() => navigate("/admin/evenements")}
+                className="w-full sm:w-auto px-4 py-2.5 text-sm font-medium rounded-lg border transition-colors text-center"
+                style={{ color: "#253C96", borderColor: "#253C96" }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#EEF1FB")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.backgroundColor = "transparent")
+                }
+              >
+                Annuler
+              </button>
               <button
                 onClick={handleNext}
-                className="px-6 py-2 bg-purple-600 text-white text-sm font-semibold rounded-lg hover:bg-purple-700 transition-colors"
+                className="w-full sm:w-auto px-6 py-2.5 text-white text-sm font-semibold rounded-lg transition-colors"
+                style={{ backgroundColor: "#F59A1E" }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#d4841a")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#F59A1E")
+                }
               >
                 Suivant →
               </button>
@@ -367,10 +390,11 @@ export default function CreateEvenement() {
           </>
         )}
 
+        {/* ── STEP 2 : Tickets ── */}
         {step === STEP_TICKETS && (
           <>
             <SectionTitle>Types de tickets</SectionTitle>
-            <div className="px-6 pt-4 pb-6 flex flex-col gap-4">
+            <div className="px-4 sm:px-6 pt-4 pb-6 flex flex-col gap-4">
               <p className="text-sm text-gray-500">
                 Ajoutez les différents types de tickets pour cet événement.
               </p>
@@ -378,13 +402,16 @@ export default function CreateEvenement() {
               {tickets.map((ticket, i) => (
                 <div
                   key={i}
-                  className="border border-purple-100 rounded-xl p-4 bg-purple-50 flex flex-col gap-3"
+                  className="border rounded-xl p-4 flex flex-col gap-3"
+                  style={{ borderColor: "#253C96", backgroundColor: "#EEF1FB" }}
                 >
                   <div className="flex justify-between items-center">
-                    <span className="text-xs font-semibold text-purple-600 uppercase tracking-wide">
+                    <span
+                      className="text-xs font-semibold uppercase tracking-wide"
+                      style={{ color: "#253C96" }}
+                    >
                       Ticket {i + 1}
                     </span>
-
                     {tickets.length > 1 && (
                       <button
                         onClick={() =>
@@ -399,12 +426,10 @@ export default function CreateEvenement() {
                     )}
                   </div>
 
-                  {/* Nom du ticket */}
-                  <div className="flex flex-col gap-1">
+                  <div className="flex flex-col gap-1.5">
                     <label className="text-xs text-gray-500 font-medium uppercase tracking-wide">
                       Libellé du ticket <span className="text-red-400">*</span>
                     </label>
-
                     <input
                       type="text"
                       placeholder="VIP, Standard, Gold..."
@@ -412,63 +437,96 @@ export default function CreateEvenement() {
                       onChange={(e) =>
                         updateTicket(i, "libelle", e.target.value)
                       }
-                      className="border border-gray-200 bg-white rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-300"
-                    />
-                  </div>
-
-                  {/* Prix */}
-                  <div className="flex flex-col gap-1">
-                    <label className="text-xs text-gray-500 font-medium uppercase tracking-wide">
-                      Prix (FCFA) <span className="text-red-400">*</span>
-                    </label>
-
-                    <input
-                      type="number"
-                      min="0"
-                      placeholder="Ex: 25000"
-                      value={ticket.prix_ticket}
-                      onChange={(e) =>
-                        updateTicket(i, "prix_ticket", e.target.value)
-                      }
-                      className="border border-gray-200 bg-white rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-300"
-                    />
-                  </div>
-
-                  {/* Quantité */}
-                  <div className="flex flex-col gap-1">
-                    <label className="text-xs text-gray-500 font-medium uppercase tracking-wide">
-                      Quantité <span className="text-red-400">*</span>
-                    </label>
-
-                    <input
-                      type="number"
-                      min={1}
-                      placeholder="Ex: 100"
-                      value={ticket.quantite_type_ticket}
-                      onChange={(e) =>
-                        updateTicket(i, "quantite_type_ticket", e.target.value)
-                      }
-                      className={`border rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-300 ${
-                        fieldErrors[`ticket_${i}_qte`]
+                      className={`border rounded-lg px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 transition-colors ${
+                        fieldErrors[`ticket_${i}_libelle`]
                           ? "border-red-300 bg-red-50"
-                          : "border-gray-200 bg-white"
+                          : "border-gray-200"
                       }`}
                     />
-
-                    {fieldErrors[`ticket_${i}_qte`] && (
+                    {fieldErrors[`ticket_${i}_libelle`] && (
                       <p className="text-xs text-red-500">
-                        {fieldErrors[`ticket_${i}_qte`]}
+                        {fieldErrors[`ticket_${i}_libelle`]}
                       </p>
                     )}
+                  </div>
+
+                  {/* Prix + Quantité côte à côte sur sm+ */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-xs text-gray-500 font-medium uppercase tracking-wide">
+                        Prix (FCFA) <span className="text-red-400">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        placeholder="Ex: 25000"
+                        value={ticket.prix_ticket}
+                        onChange={(e) =>
+                          updateTicket(i, "prix_ticket", e.target.value)
+                        }
+                        className={`border rounded-lg px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 transition-colors ${
+                          fieldErrors[`ticket_${i}_prix`]
+                            ? "border-red-300 bg-red-50"
+                            : "border-gray-200"
+                        }`}
+                      />
+                      {fieldErrors[`ticket_${i}_prix`] && (
+                        <p className="text-xs text-red-500">
+                          {fieldErrors[`ticket_${i}_prix`]}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-xs text-gray-500 font-medium uppercase tracking-wide">
+                        Quantité <span className="text-red-400">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        min={1}
+                        placeholder="Ex: 100"
+                        value={ticket.quantite_type_ticket}
+                        onChange={(e) =>
+                          updateTicket(
+                            i,
+                            "quantite_type_ticket",
+                            e.target.value,
+                          )
+                        }
+                        className={`border rounded-lg px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 transition-colors ${
+                          fieldErrors[`ticket_${i}_qte`]
+                            ? "border-red-300 bg-red-50"
+                            : "border-gray-200"
+                        }`}
+                      />
+                      {fieldErrors[`ticket_${i}_qte`] && (
+                        <p className="text-xs text-red-500">
+                          {fieldErrors[`ticket_${i}_qte`]}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
 
-              <div className="border border-teal-200 rounded-xl p-4 bg-teal-50 flex items-center justify-between">
-                <span className="text-sm font-semibold text-teal-700 uppercase tracking-wide">
-                  Nombre Total de Ticket
+              {/* Total tickets */}
+              <div
+                className="rounded-xl p-4 flex items-center justify-between"
+                style={{
+                  backgroundColor: "#EEF1FB",
+                  border: "1px solid #253C96",
+                }}
+              >
+                <span
+                  className="text-sm font-semibold uppercase tracking-wide"
+                  style={{ color: "#253C96" }}
+                >
+                  Nombre total de tickets
                 </span>
-                <span className="text-lg font-bold text-teal-700">
+                <span
+                  className="text-lg font-bold"
+                  style={{ color: "#253C96" }}
+                >
                   {tickets.reduce(
                     (sum, t) => sum + (Number(t.quantite_type_ticket) || 0),
                     0,
@@ -476,25 +534,47 @@ export default function CreateEvenement() {
                 </span>
               </div>
 
+              {/* Ajouter un ticket */}
               <button
                 onClick={() => setTickets((prev) => [...prev, emptyTicket()])}
-                className="w-full py-2.5 border-2 border-dashed border-purple-300 rounded-xl text-purple-600 text-sm font-medium hover:bg-purple-50 transition-colors"
+                className="w-full py-2.5 border-2 border-dashed rounded-xl text-sm font-medium transition-colors"
+                style={{ borderColor: "#253C96", color: "#253C96" }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#EEF1FB")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.backgroundColor = "transparent")
+                }
               >
                 + Ajouter un autre type de ticket
               </button>
             </div>
 
-            <div className="px-6 py-4 border-t border-gray-100 bg-gray-50 flex gap-3 justify-end">
+            <div className="px-4 sm:px-6 py-4 border-t border-gray-100 bg-gray-50 flex flex-col-reverse sm:flex-row gap-3 sm:justify-between">
               <button
                 onClick={() => setStep(STEP_INFO)}
-                className="px-4 py-2 text-sm text-gray-500 hover:text-gray-700 font-medium"
+                className="w-full sm:w-auto px-4 py-2.5 text-sm font-medium rounded-lg border transition-colors text-center"
+                style={{ color: "#253C96", borderColor: "#253C96" }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#EEF1FB")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.backgroundColor = "transparent")
+                }
               >
                 Retour
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={saving}
-                className="px-6 py-2 bg-teal-500 text-white text-sm font-semibold rounded-lg hover:bg-teal-600 transition-colors disabled:opacity-50"
+                className="w-full sm:w-auto px-6 py-2.5 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-50"
+                style={{ backgroundColor: "#F59A1E" }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#d4841a")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#F59A1E")
+                }
               >
                 {saving ? "Création..." : "Créer l'événement"}
               </button>
@@ -508,8 +588,11 @@ export default function CreateEvenement() {
 
 function SectionTitle({ children }) {
   return (
-    <div className="px-6 py-3 border-b border-gray-100 bg-gray-50">
-      <p className="text-xs font-semibold text-purple-500 uppercase tracking-wide">
+    <div className="px-4 sm:px-6 py-3 border-b border-gray-100 bg-gray-50">
+      <p
+        className="text-xs font-semibold uppercase tracking-wide"
+        style={{ color: "#253C96" }}
+      >
         {children}
       </p>
     </div>
@@ -526,7 +609,7 @@ function Field({
   required,
 }) {
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1.5">
       <label className="text-xs text-gray-500 font-medium uppercase tracking-wide">
         {label} {required && <span className="text-red-400">*</span>}
       </label>
@@ -535,7 +618,7 @@ function Field({
         type={type}
         value={value}
         onChange={onChange}
-        className={`border rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-300 transition-colors ${
+        className={`border rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 transition-colors ${
           error ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
         }`}
       />
@@ -554,7 +637,7 @@ function SelectField({
   children,
 }) {
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1.5">
       <label className="text-xs text-gray-500 font-medium uppercase tracking-wide">
         {label} {required && <span className="text-red-400">*</span>}
       </label>
@@ -562,7 +645,7 @@ function SelectField({
         name={name}
         value={value}
         onChange={onChange}
-        className={`border rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-300 transition-colors ${
+        className={`border rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 transition-colors ${
           error ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
         }`}
       >

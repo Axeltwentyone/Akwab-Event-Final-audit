@@ -10,7 +10,6 @@ function getPasswordStrength(password) {
   if (/[A-Z]/.test(password)) score++;
   if (/[0-9]/.test(password)) score++;
   if (/[^A-Za-z0-9]/.test(password)) score++;
-
   if (score <= 1)
     return { label: "Faible", color: "bg-red-500", width: "w-1/4" };
   if (score === 2)
@@ -32,7 +31,6 @@ export default function Register() {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
   const strength = getPasswordStrength(form.mot_de_passe);
 
   function handleChange(e) {
@@ -76,61 +74,114 @@ export default function Register() {
 
   return (
     <AuthLayout>
+      <style>{`
+        .auth-input {
+          width: 100%;
+          padding: 12px 16px;
+          border-radius: 12px;
+          border: 1.5px solid #e5e7eb;
+          background: #f9fafb;
+          font-size: 14px;
+          color: #1f2937;
+          outline: none;
+          transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+        }
+        .auth-input:focus {
+          border-color: #F59A1E;
+          background: #fff;
+          box-shadow: 0 0 0 3px rgba(245,154,30,0.12);
+        }
+        .auth-input::placeholder { color: #9ca3af; }
+      `}</style>
+
       <img src={logo} alt="Akwab Event" className="w-20" />
-      <p className="text-sm text-gray-400">Créez votre compte</p>
+
+      <div className="text-center">
+        <h2 className="text-2xl font-extrabold text-gray-800 tracking-tight">
+          Créer un compte
+        </h2>
+        <p className="text-sm text-gray-400 mt-1">Rejoignez Akwab'Event</p>
+      </div>
 
       {error && (
-        <p className="text-red-500 text-xs text-center w-full">{error}</p>
+        <div className="w-full bg-red-50 border border-red-200 text-red-600 text-xs rounded-xl px-4 py-3 text-center">
+          {error}
+        </div>
       )}
 
       <div className="w-full flex flex-col gap-3">
-        <input
-          name="nom"
-          type="text"
-          placeholder="Nom"
-          value={form.nom}
-          onChange={handleChange}
-          className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-400"
-        />
-
-        <input
-          name="prenoms"
-          type="text"
-          placeholder="Prénoms"
-          value={form.prenoms}
-          onChange={handleChange}
-          className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-400"
-        />
-
-        <input
-          name="email"
-          type="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={handleChange}
-          className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-400"
-        />
-
-        <input
-          name="telephone"
-          type="tel"
-          placeholder="Téléphone"
-          value={form.telephone}
-          onChange={handleChange}
-          className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-400"
-        />
+        {/* Nom + Prénoms */}
+        <div className="flex gap-3">
+          <div className="flex flex-col gap-1 flex-1">
+            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+              Nom
+            </label>
+            <input
+              name="nom"
+              type="text"
+              placeholder="Doe"
+              value={form.nom}
+              onChange={handleChange}
+              className="auth-input"
+            />
+          </div>
+          <div className="flex flex-col gap-1 flex-1">
+            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+              Prénoms
+            </label>
+            <input
+              name="prenoms"
+              type="text"
+              placeholder="John"
+              value={form.prenoms}
+              onChange={handleChange}
+              className="auth-input"
+            />
+          </div>
+        </div>
 
         <div className="flex flex-col gap-1">
+          <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+            Email
+          </label>
+          <input
+            name="email"
+            type="email"
+            placeholder="votre@email.com"
+            value={form.email}
+            onChange={handleChange}
+            className="auth-input"
+          />
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+            Téléphone
+          </label>
+          <input
+            name="telephone"
+            type="tel"
+            placeholder="+225 00 00 00 00 00"
+            value={form.telephone}
+            onChange={handleChange}
+            className="auth-input"
+          />
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+            Mot de passe
+          </label>
           <input
             name="mot_de_passe"
             type="password"
-            placeholder="Mot de passe"
+            placeholder="••••••••"
             value={form.mot_de_passe}
             onChange={handleChange}
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-400"
+            className="auth-input"
           />
           {strength && (
-            <div className="flex flex-col gap-1 px-1">
+            <div className="flex flex-col gap-1 px-1 mt-1">
               <div className="w-full bg-gray-200 rounded-full h-1.5">
                 <div
                   className={`h-1.5 rounded-full transition-all duration-300 ${strength.color} ${strength.width}`}
@@ -153,29 +204,76 @@ export default function Register() {
           )}
         </div>
 
-        <input
-          name="mot_de_passe_confirmation"
-          type="password"
-          placeholder="Confirmer le mot de passe"
-          value={form.mot_de_passe_confirmation}
-          onChange={handleChange}
-          className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-400"
-        />
+        <div className="flex flex-col gap-1">
+          <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+            Confirmer le mot de passe
+          </label>
+          <input
+            name="mot_de_passe_confirmation"
+            type="password"
+            placeholder="••••••••"
+            value={form.mot_de_passe_confirmation}
+            onChange={handleChange}
+            className="auth-input"
+          />
+        </div>
 
         <button
           onClick={handleSubmit}
           disabled={loading}
-          className="w-full mt-1 py-3 rounded-xl bg-purple-500 hover:bg-purple-600 text-white text-sm font-semibold transition-all active:scale-[0.98] disabled:opacity-60"
+          className="w-full mt-1 py-3 rounded-xl text-white text-sm font-bold tracking-wide transition-all active:scale-[0.98] disabled:opacity-60"
+          style={{
+            backgroundColor: "#F59A1E",
+            boxShadow: "0 4px 14px rgba(245,154,30,0.35)",
+          }}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.backgroundColor = "#d4841a")
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.backgroundColor = "#F59A1E")
+          }
         >
-          {loading ? "Inscription..." : "S'inscrire"}
+          {loading ? (
+            <span className="flex items-center justify-center gap-2">
+              <svg
+                className="animate-spin w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8z"
+                />
+              </svg>
+              Inscription...
+            </span>
+          ) : (
+            "S'inscrire"
+          )}
         </button>
+      </div>
+
+      <div className="flex items-center gap-3 w-full">
+        <div className="flex-1 h-px bg-gray-200" />
+        <span className="text-xs text-gray-400">ou</span>
+        <div className="flex-1 h-px bg-gray-200" />
       </div>
 
       <p className="text-sm text-gray-400">
         Vous avez un compte ?{" "}
         <Link
           to="/login"
-          className="text-purple-500 font-medium hover:underline"
+          className="font-bold hover:underline"
+          style={{ color: "#F59A1E" }}
         >
           Connectez-vous
         </Link>

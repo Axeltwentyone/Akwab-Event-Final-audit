@@ -65,14 +65,13 @@ export default function UpdateUtilisateur() {
     setError("");
     setSuccess("");
     setFieldErrors({});
-
-    // Validation mot de passe côté client
     if (form.password && form.password !== form.password_confirmation) {
-      setFieldErrors({ password_confirmation: "Les mots de passe ne correspondent pas." });
+      setFieldErrors({
+        password_confirmation: "Les mots de passe ne correspondent pas.",
+      });
       setSaving(false);
       return;
     }
-
     const payload = {
       nom: form.nom,
       prenoms: form.prenoms,
@@ -83,7 +82,6 @@ export default function UpdateUtilisateur() {
       payload.password = form.password;
       payload.password_confirmation = form.password_confirmation;
     }
-
     try {
       const res = await fetch(`http://127.0.0.1:8000/api/utilisateurs/${id}`, {
         method: "PUT",
@@ -94,7 +92,6 @@ export default function UpdateUtilisateur() {
         body: JSON.stringify(payload),
       });
       const data = await res.json();
-
       if (data.success) {
         setSuccess("Utilisateur mis à jour avec succès.");
         setTimeout(() => navigate(`/admin/utilisateurs/${id}`), 1200);
@@ -110,47 +107,50 @@ export default function UpdateUtilisateur() {
     }
   }
 
-  if (loading) {
+  if (loading)
     return (
-      <div className="flex flex-col gap-6">
-        <p className="text-center text-gray-400 py-20">Chargement...</p>
+      <div
+        className="text-center py-20 font-medium"
+        style={{ color: "#253C96" }}
+      >
+        Chargement...
       </div>
     );
-  }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 w-full max-w-2xl mx-auto px-4 md:px-0">
       {/* Header */}
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigate(`/admin/utilisateurs/${id}`)}
-          className="text-gray-400 hover:text-purple-500 transition-colors"
+          className="text-gray-400 hover:text-gray-600 transition-colors text-xl font-bold"
         >
           ←
         </button>
-        <h1 className="text-2xl font-bold text-purple-600 tracking-wide">
+        <h1
+          className="text-xl md:text-2xl font-bold tracking-wide"
+          style={{ color: "#253C96" }}
+        >
           Modifier l'utilisateur
         </h1>
       </div>
 
-      {/* Alertes globales */}
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg px-4 py-3">
           {error}
         </div>
       )}
       {success && (
-        <div className="bg-teal-50 border border-teal-200 text-teal-600 text-sm rounded-lg px-4 py-3">
+        <div className="bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg px-4 py-3">
           {success}
         </div>
       )}
 
-      {/* Formulaire */}
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         <form onSubmit={handleSubmit}>
-          {/* Section identité */}
+          {/* Informations personnelles */}
           <SectionTitle>Informations personnelles</SectionTitle>
-          <div className="px-6 pb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="px-4 sm:px-6 py-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field
               label="Nom"
               name="nom"
@@ -175,9 +175,9 @@ export default function UpdateUtilisateur() {
               onChange={handleChange}
               error={fieldErrors.email}
               required
-              className="md:col-span-2"
+              className="sm:col-span-2"
             />
-            <div className="flex flex-col gap-1 md:col-span-2">
+            <div className="flex flex-col gap-1.5 sm:col-span-2">
               <label className="text-xs text-gray-500 font-medium uppercase tracking-wide">
                 Rôle
               </label>
@@ -185,7 +185,7 @@ export default function UpdateUtilisateur() {
                 name="role"
                 value={form.role}
                 onChange={handleChange}
-                className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-300 bg-white"
+                className="border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 bg-white transition-colors"
               >
                 <option value="">— Sélectionner un rôle —</option>
                 <option value="admin">Admin</option>
@@ -198,10 +198,10 @@ export default function UpdateUtilisateur() {
             </div>
           </div>
 
-          {/* Section mot de passe */}
+          {/* Mot de passe */}
           <SectionTitle>Changer le mot de passe</SectionTitle>
-          <div className="px-6 pb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <p className="text-xs text-gray-400 md:col-span-2 -mt-2">
+          <div className="px-4 sm:px-6 py-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <p className="text-xs text-gray-400 sm:col-span-2 -mt-1">
               Laissez vide pour ne pas modifier le mot de passe.
             </p>
             <Field
@@ -213,7 +213,7 @@ export default function UpdateUtilisateur() {
               error={fieldErrors.password}
             />
             <Field
-              label="Confirmer le mot de passe"
+              label="Confirmer"
               name="password_confirmation"
               type="password"
               value={form.password_confirmation}
@@ -223,18 +223,32 @@ export default function UpdateUtilisateur() {
           </div>
 
           {/* Actions */}
-          <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-end gap-3 bg-gray-50">
+          <div className="px-4 sm:px-6 py-4 border-t border-gray-100 bg-gray-50 flex flex-col-reverse sm:flex-row gap-3 sm:justify-between">
             <button
               type="button"
               onClick={() => navigate(`/admin/utilisateurs/${id}`)}
-              className="px-4 py-2 text-sm text-gray-500 hover:text-gray-700 font-medium transition-colors"
+              className="w-full sm:w-auto px-4 py-2.5 text-sm font-medium rounded-lg border transition-colors text-center"
+              style={{ color: "#253C96", borderColor: "#253C96" }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor = "#EEF1FB")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "transparent")
+              }
             >
               Annuler
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="px-5 py-2 bg-purple-600 text-white text-sm font-semibold rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50"
+              className="w-full sm:w-auto px-5 py-2.5 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-50"
+              style={{ backgroundColor: "#F59A1E" }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor = "#d4841a")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "#F59A1E")
+              }
             >
               {saving ? "Enregistrement..." : "Enregistrer"}
             </button>
@@ -247,23 +261,34 @@ export default function UpdateUtilisateur() {
 
 function SectionTitle({ children }) {
   return (
-    <div className="px-6 py-3 border-b border-gray-100 bg-gray-50">
-      <p className="text-xs font-semibold text-purple-500 uppercase tracking-wide">
+    <div className="px-4 sm:px-6 py-3 border-b border-gray-100 bg-gray-50">
+      <p
+        className="text-xs font-semibold uppercase tracking-wide"
+        style={{ color: "#253C96" }}
+      >
         {children}
       </p>
     </div>
   );
 }
 
-function Field({ label, name, type = "text", value, onChange, error, required, className = "" }) {
+function Field({
+  label,
+  name,
+  type = "text",
+  value,
+  onChange,
+  error,
+  required,
+  className = "",
+}) {
   return (
-    <div className={`flex flex-col gap-1 ${className}`}>
+    <div className={`flex flex-col gap-1.5 ${className}`}>
       <label
         htmlFor={name}
         className="text-xs text-gray-500 font-medium uppercase tracking-wide"
       >
-        {label}
-        {required && <span className="text-red-400 ml-1">*</span>}
+        {label} {required && <span className="text-red-400">*</span>}
       </label>
       <input
         id={name}
@@ -271,8 +296,7 @@ function Field({ label, name, type = "text", value, onChange, error, required, c
         type={type}
         value={value}
         onChange={onChange}
-        required={required}
-        className={`border rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-300 transition-colors ${
+        className={`border rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 transition-colors ${
           error ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
         }`}
       />

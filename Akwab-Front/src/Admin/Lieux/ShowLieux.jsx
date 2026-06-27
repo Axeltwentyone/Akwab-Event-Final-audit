@@ -83,22 +83,29 @@ export default function ShowLieux() {
     );
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] px-4 py-8 w-full">
-      <div className="w-full max-w-xl flex flex-col gap-6">
-        <div className="flex items-center gap-3 self-start sm:self-center sm:w-full">
+    <div className="flex flex-col items-center min-h-[80vh] px-4 py-8 w-full">
+      <div className="flex flex-col gap-6 max-w-xl w-full">
+        {/* Header */}
+        <div className="flex items-center gap-3">
           <button
             onClick={() => navigate("/admin/lieux")}
-            className="text-gray-400 hover:text-purple-500 transition-colors flex-shrink-0"
+            className="text-gray-400 hover:text-gray-600 transition-colors text-xl font-bold flex-shrink-0"
           >
             ←
           </button>
-          <h1 className="text-xl sm:text-2xl font-bold text-purple-600 tracking-wide">
+          <h1
+            className="text-xl sm:text-2xl font-bold tracking-wide"
+            style={{ color: "#253C96" }}
+          >
             Détails du lieu
           </h1>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm w-full">
-          <div className="h-32 sm:h-40 bg-purple-50 flex items-center justify-center">
+        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden w-full">
+          <div
+            className="h-32 sm:h-40 flex items-center justify-center"
+            style={{ backgroundColor: "#EEF1FB" }}
+          >
             <img
               src="/location.svg"
               alt=""
@@ -106,17 +113,20 @@ export default function ShowLieux() {
             />
           </div>
 
-          <div className="p-5 sm:p-6 flex flex-col gap-4 items-center text-center sm:items-stretch sm:text-left">
+          <div className="p-5 sm:p-6 flex flex-col gap-4">
             <div>
               <p className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-1">
                 Nom
               </p>
-              <p className="text-lg font-bold text-[#4D027A] break-words">
+              <p
+                className="text-lg font-bold break-words"
+                style={{ color: "#253C96" }}
+              >
                 {lieu.nom}
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <p className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-1">
                   Ville
@@ -127,21 +137,29 @@ export default function ShowLieux() {
                 <p className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-1">
                   Adresse
                 </p>
-                <p className="text-sm text-gray-700 wrap-break-words">
+                <p className="text-sm text-gray-700 break-words">
                   {lieu.adresse}
                 </p>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-2 pt-4 border-t border-gray-100 mt-2 w-full">
+            {/* Actions */}
+            <div className="flex flex-col sm:flex-row gap-2 pt-4 border-t border-gray-100 mt-2">
               <button
                 onClick={() => navigate(`/admin/lieux/${id}/edit`)}
-                className="flex-1 text-sm py-2.5 border border-purple-200 rounded-lg text-purple-600 hover:bg-purple-50 font-medium transition-colors"
+                className="flex-1 text-sm py-2.5 rounded-lg border font-medium transition-colors text-white"
+                style={{ backgroundColor: "#F59A1E", borderColor: "#F59A1E" }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#d4841a")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#F59A1E")
+                }
               >
                 Modifier
               </button>
               <button
-                onClick={() => setDeleteConfirm(true)}
+                onClick={() => confirmDelete()}
                 className="py-2.5 px-4 border border-red-200 rounded-lg text-red-500 hover:bg-red-50 transition-colors flex items-center justify-center gap-2 text-sm font-medium"
               >
                 <img src="/bin.svg" alt="" className="w-4 h-4" />
@@ -151,37 +169,52 @@ export default function ShowLieux() {
           </div>
         </div>
       </div>
-
-      {/* Delete modal */}
-      {deleteConfirm && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-xl">
-            <h3 className="font-semibold text-gray-800 text-lg mb-2">
-              Supprimer ce lieu ?
-            </h3>
-            <p className="text-sm text-gray-500 mb-6">
-              Cette action est irréversible. Les événements liés à ce lieu
-              pourraient être affectés.
-            </p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setDeleteConfirm(false)}
-                disabled={deleting}
-                className="flex-1 py-2 border border-gray-200 rounded-lg text-sm text-gray-500 hover:bg-gray-50 transition-colors disabled:opacity-50"
-              >
-                Annuler
-              </button>
-              <button
-                onClick={handleDelete}
-                disabled={deleting}
-                className="flex-1 py-2 bg-red-500 text-white rounded-lg text-sm font-semibold hover:bg-red-600 transition-colors disabled:opacity-50"
-              >
-                {deleting ? "Suppression..." : "Supprimer"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
+
+  // Remplacez handleDelete et deleteConfirm par SweetAlert2 :
+  async function confirmDelete() {
+    const result = await Swal.fire({
+      title: "Supprimer ce lieu ?",
+      text: "Cette action est irréversible. Les événements liés pourraient être affectés.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#F59A1E",
+      cancelButtonColor: "#253C96",
+      confirmButtonText: "Oui, supprimer",
+      cancelButtonText: "Annuler",
+    });
+    if (!result.isConfirmed) return;
+    try {
+      const res = await fetch(`http://127.0.0.1:8000/api/lieux/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      const data = await res.json();
+      if (data.success || res.ok) {
+        await Swal.fire({
+          title: "Supprimé !",
+          icon: "success",
+          confirmButtonColor: "#F59A1E",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+        navigate("/admin/lieux");
+      } else {
+        Swal.fire({
+          title: "Erreur",
+          text: data.message ?? "Erreur.",
+          icon: "error",
+          confirmButtonColor: "#253C96",
+        });
+      }
+    } catch {
+      Swal.fire({
+        title: "Erreur",
+        text: "Impossible de contacter le serveur.",
+        icon: "error",
+        confirmButtonColor: "#253C96",
+      });
+    }
+  }
 }
