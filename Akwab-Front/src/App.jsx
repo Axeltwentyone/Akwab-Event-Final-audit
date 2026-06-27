@@ -46,6 +46,7 @@ import UpdateLieux from "./Admin/Lieux/UpdateLieux";
 import CreateCategorie from "./Admin/Categories/CreateCategorie";
 import ListCategories from "./Admin/Categories/ListCategorie";
 import UpdateCategorie from "./Admin/Categories/UpdateCategorie";
+import TousEventPopulaires from "./Utilisateurs/Evenements/TousEventPopulaires";
 
 function App() {
   return (
@@ -66,6 +67,8 @@ function App() {
           <Route path="/accueil" element={<Accueil />} />
 
           <Route path="/categorie/:id" element={<DetailCategorie />} />
+
+          <Route path="/evenements/populaires" element={<TousEventPopulaires />} />
 
           <Route path="/evenements" element={<TousEvenements />} />
           <Route path="/evenements/:id" element={<DetailEvenement />} />

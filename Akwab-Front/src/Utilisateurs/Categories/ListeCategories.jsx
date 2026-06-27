@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
 
-function ListeCategories() {
+function ListeCategories({ onFiltrer, filtreActif }) {
 
-    const navigate = useNavigate();
-    const [activeCategory, setActiveCategory] = useState(null);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -34,10 +31,17 @@ function ListeCategories() {
         fetchCategories();
     }, []);
 
+    
+
     const handleClick = (id) => {
-        setActiveCategory(id);
-        navigate(`/categorie/${id}`);
+    
+        if (filtreActif === id) {
+            onFiltrer(null);
+        } else {
+            onFiltrer(id); 
+        }
     };
+
 
 
     return (
@@ -45,9 +49,9 @@ function ListeCategories() {
 
 
             <div className="flex items-center justify-between mb-3 pt-[50px]">
-                <h2 id="titre" className="text-[24px] font-bold text-[#9952DE]">Catégories</h2>
+                <h2 id="titre" className="text-[24px] font-bold text-[#253C96]">Catégories</h2>
 
-            </div>
+            </div>      
 
 
             {loading && (
@@ -72,8 +76,8 @@ function ListeCategories() {
                             className="flex flex-col items-center shrink-0"
                         >
                             <div
-                                className={`w-16 h-16 rounded-full overflow-hidden flex items-center justify-center transition-all duration-300 bg-[#05CDC2]/50
-                                    ${activeCategory === cat.id_categorie
+                                className={`w-16 h-16 rounded-full overflow-hidden flex items-center justify-center transition-all duration-300 bg-[#253C96]/50
+                                    ${filtreActif === cat.id_categorie
                                         ? "ring-4 ring-[#4F46E5]/20"
                                         : ""
                                     }`}>
@@ -90,8 +94,8 @@ function ListeCategories() {
 
                             <span
                                 className={`mt-4 text-sm transition-all
-                                    ${activeCategory === cat.id_categorie
-                                        ? "text-black border-b-4 border-[#2563EB]"
+                                    ${filtreActif === cat.id_categorie
+                                        ? "text-black font-bold"
                                         : "text-black"
                                     }`}>
                                 {cat.libelle}

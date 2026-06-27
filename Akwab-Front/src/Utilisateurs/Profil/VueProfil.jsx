@@ -53,7 +53,7 @@ function VueProfil() {
                     <button onClick={() => navigate(-1)} className="p-2 rounded-full hover:bg-gray-200 transition">
                         <img src={arrow} alt="retour" />
                     </button>
-                    <h2 className="text-[24px] font-bold text-[#9952DE]">Mon profil</h2>
+                    <h2 className="text-[24px] font-bold text-[#253C96]">Mon profil</h2>
                 </div>
 
                 {error && (
@@ -76,7 +76,7 @@ function VueProfil() {
                         <div className="px-6 py-4 border-t border-gray-100 flex justify-end bg-gray-50">
                             <button
                                 onClick={() => navigate("/profil/modifier")}
-                                className="px-5 py-2 bg-[#4D027A] text-white text-sm font-semibold rounded-lg hover:bg-[#3a0260] transition-colors"
+                                className="px-5 py-2 bg-[#F36B2E] text-white text-sm font-semibold rounded-lg hover:bg-[#3a0260] transition-colors"
                             >
                                 Modifier
                             </button>
@@ -102,7 +102,7 @@ function InfoField({ label, value, className = "" }) {
 function SectionTitle({ children }) {
     return (
         <div className="px-6 py-3 border-b border-gray-100 bg-gray-50">
-            <p className="text-xs font-semibold text-purple-500 uppercase tracking-wide">{children}</p>
+            <p className="text-xs font-semibold text-[#253C96] uppercase tracking-wide">{children}</p>
         </div>
     );
 }

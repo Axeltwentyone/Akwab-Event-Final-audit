@@ -21,7 +21,6 @@ function UpdateProfil() {
     const [success, setSuccess] = useState("");
     const [fieldErrors, setFieldErrors] = useState({});
 
-    // Charger les données existantes
     useEffect(() => {
         const fetchProfil = async () => {
             try {
@@ -141,7 +140,7 @@ function UpdateProfil() {
                     <button onClick={() => navigate(-1)} className="p-2 rounded-full hover:bg-gray-200 transition">
                         <img src={arrow} alt="retour" />
                     </button>
-                    <h2 className="text-[24px] font-bold text-[#9952DE]">Modifier mon profil</h2>
+                    <h2 className="text-[24px] font-bold text-[#253C96]">Modifier mon profil</h2>
                 </div>
 
                 {error && (
@@ -184,7 +183,7 @@ function UpdateProfil() {
                             <button
                                 type="submit"
                                 disabled={saving}
-                                className="px-5 py-2 bg-[#4D027A] text-white text-sm font-semibold rounded-lg hover:bg-[#3a0260] transition-colors disabled:opacity-50"
+                                className="px-5 py-2 bg-[#F36B2E] text-white text-sm font-semibold rounded-lg hover:bg-[#3a0260] transition-colors disabled:opacity-50"
                             >
                                 {saving ? "Enregistrement..." : "Enregistrer"}
                             </button>
@@ -199,7 +198,7 @@ function UpdateProfil() {
 function SectionTitle({ children }) {
     return (
         <div className="px-6 py-3 border-b border-gray-100 bg-gray-50">
-            <p className="text-xs font-semibold text-purple-500 uppercase tracking-wide">{children}</p>
+            <p className="text-xs font-semibold text-[#253C96] uppercase tracking-wide">{children}</p>
         </div>
     );
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\EvenementResource;
 use App\Models\Evenement;
 use Illuminate\Http\Request;
 
@@ -59,6 +60,20 @@ class AimerController extends Controller
         return response()->json([
             'success' => true,
             'data'    => $evenements,
+        ]);
+    }
+
+
+    public function populaires()
+    {
+        $evenements = Evenement::with(['categories', 'lieux', 'organisateurs', 'types_tickets'])
+            ->withCount('utilisateursAiment')
+            ->orderBy('utilisateurs_aiment_count', 'desc')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data'    => EvenementResource::collection($evenements),
         ]);
     }
 }

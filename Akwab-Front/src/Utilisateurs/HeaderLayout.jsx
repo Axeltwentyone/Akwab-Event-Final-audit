@@ -1,8 +1,10 @@
 import logo from "../assets/Image/logo.png"
 import home from "../assets/icones/home.svg"
-import favoris from "../assets/icones/favorite.svg"
+// import favoris from "../assets/icones/favorite.svg"
+import favorisIcon from "../assets/icones/favorite-blanc.svg"
 import ticket from "../assets/icones/tickets.svg"
-import profil from "../assets/icones/account_circle.svg"
+// import profil from "../assets/icones/account_circle.svg"
+import profilIcon from "../assets/icones/profil-blanc.svg"
 import BoutonsNavigation from "./BoutonsNavigation"
 import { Link, useNavigate } from "react-router-dom"
 import Footer from "./Footer"
@@ -26,7 +28,7 @@ function HeaderLayout({ children }) {
         <header>
 
             <aside id="logo-sidebar" className="hidden sm:block fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
-                <div className="h-full px-3 py-4 overflow-y-auto bg-[#05CDC2] opacity-[80%] ">
+                <div className="h-full px-3 py-4 overflow-y-auto bg-[#19244E] ">
                     <Link to="" className="flex items-center ps-2.5 mb-5">
                         <img src={logo} className="w-[200px]" alt="Akwab'Event Logo" />
                     </Link>
@@ -35,29 +37,29 @@ function HeaderLayout({ children }) {
                         <li>
                             <Link to="/accueil" className="flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group">
                                 <img src={home} alt="icone-home" />
-                                <span className="ms-3 text-gray-200 hover:text-purple-900 transition-colors font-bold">Accueil</span>
+                                <span className="ms-3 text-gray-200 hover:text-[#F59A1E] transition-colors font-bold">Accueil</span>
                             </Link>
                         </li>
                         <li>
                             <Link to="/favoris" className="flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group">
-                                <img src={favoris} alt="icone-favoris" />
-                                <span className="flex-1 ms-3 text-gray-200 hover:text-purple-900 transition-colors font-bold">Favoris</span>
+                                <img src={favorisIcon} alt="icone-favoris" />
+                                <span className="flex-1 ms-3 text-gray-200 hover:text-[#F59A1E] transition-colors font-bold">Favoris</span>
                             </Link>
                         </li>
                         <li>
                             <Link to="/tickets" className="flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group">
                                 <img src={ticket} alt="icones-ticket" />
-                                <span className="flex-1 ms-3 text-gray-200 hover:text-purple-900 transition-colors font-bold">Tickets</span>
+                                <span className="flex-1 ms-3 text-gray-200 hover:text-[#F59A1E] transition-colors font-bold">Tickets</span>
                             </Link>
                         </li>
                         <li>
                             <Link to="/profil" className="flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group">
-                                <img src={profil} alt="" />
-                                <span className="flex-1 ms-3 text-gray-200 hover:text-purple-900 transition-colors font-bold">Profil</span>
+                                <img src={profilIcon} alt="" />
+                                <span className="flex-1 ms-3 text-gray-200 hover:text-[#F59A1E] transition-colors font-bold">Profil</span>
                             </Link>
                         </li>
 
-                        <li className="mt-[150px] bg-[#4D027A] opacity-[80%] rounded-lg border border-2 border-black text-white ">
+                        <li className="mt-[150px] bg-[#F36B2E] hover:bg-[#F59A1E] transition-colors  rounded-lg border border-2 border-black text-white ">
                             {token ? (
 
                                 <button

@@ -68,11 +68,18 @@ function Paiement() {
                 icon: "success",
                 title: "Paiement confirmé !",
                 text: "Vous allez recevoir votre ticket par email. Consultez votre boîte mail.",
-                confirmButtonColor: "#4D027A",
+                confirmButtonColor: "#253C96",
                 confirmButtonText: "Voir mon ticket",
             });
 
 
+            localStorage.setItem(`ticket_lignes_${data.data.id}`, JSON.stringify(
+                lignes.map(type => ({
+                    libelle: type.libelle,
+                    quantite: quantites[type.id_type_ticket],
+                    prix: type.prix_ticket,
+                }))
+            ));
             navigate(`/ticket/${data.data.id}`);
 
         } catch (err) {
@@ -96,7 +103,7 @@ function Paiement() {
                     <img src={arrow} alt="fleche-sortie" />
                 </button>
 
-                <div className="bg-[#4D027A]/25 py-2 text-center text-sm font-bold text-[#4D027A] mb-5">
+                <div className="bg-[#253C96]/25 py-2 text-center text-sm font-bold text-[#253C96] mb-5">
                     PAIEMENT
                 </div>
 
@@ -138,7 +145,7 @@ function Paiement() {
 
 
                 <div className="border border-gray-300 bg-gray-100 rounded-sm mb-6">
-                    <div className="bg-[#4D027A]/25 py-2 text-center text-sm font-bold text-[#4D027A]">
+                    <div className="bg-[#253C96]/25 py-2 text-center text-sm font-bold text-[#253C96]">
                         METHODES DE PAIEMENT
                     </div>
 
@@ -146,7 +153,7 @@ function Paiement() {
 
 
                         <label className="flex items-center gap-3 cursor-pointer">
-                            <input type="radio" name="paiement" value="wave" defaultChecked className="accent-[#4D027A]" />
+                            <input type="radio" name="paiement" value="wave" defaultChecked className="accent-[#253C96]" />
                             <div className="flex items-center gap-2">
                                 <img src={wave} alt="wave" className="w-10 h-10" />
                                 <p className="text-sm font-medium">Wave</p>
@@ -154,7 +161,7 @@ function Paiement() {
                         </label>
 
                         <label className="flex items-center gap-3 cursor-pointer">
-                            <input type="radio" name="paiement" value="orange" className="accent-[#4D027A]" />
+                            <input type="radio" name="paiement" value="orange" className="accent-[#253C96]" />
                             <div className="flex items-center gap-2">
                                 <img src={om} alt="om" className="w-10 h-10" />
                                 <span className="text-sm font-medium">Orange Money</span>
@@ -162,7 +169,7 @@ function Paiement() {
                         </label>
 
                         <label className="flex items-center gap-3 cursor-pointer">
-                            <input type="radio" name="paiement" value="visa" className="accent-[#4D027A]" />
+                            <input type="radio" name="paiement" value="visa" className="accent-[#253C96]" />
                             <div className="flex items-center gap-2">
                                 <img src={visa} alt="Carte virtuelle" className="w-10 h-10" />
                                 <span className="text-sm font-medium">Carte Virtuelle</span>
@@ -177,7 +184,7 @@ function Paiement() {
                 </div>
 
 
-                <button onClick={handlePaiement} disabled={loading} className="w-full py-3 bg-[#4D027A] text-white font-bold text-sm rounded-xl hover:bg-[#3a0260] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                <button onClick={handlePaiement} disabled={loading} className="w-full py-3 bg-[#253C96] text-white font-bold text-sm rounded-xl hover:bg-[#19244E] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                     {loading ? "Traitement en cours..." : `Payer ${total.toLocaleString()}F`}
                 </button>
             </div>

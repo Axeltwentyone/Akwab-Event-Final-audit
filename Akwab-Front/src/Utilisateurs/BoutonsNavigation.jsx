@@ -1,12 +1,12 @@
-import home from "../assets/icones/home.svg"
+import home from "../assets/icones/home-noir.svg"
 import favoris from "../assets/icones/favorite.svg"
-import ticket from "../assets/icones/tickets.svg"
+import ticket from "../assets/icones/ticket-noir.svg"
 import profil from "../assets/icones/account_circle.svg"
 import { Link } from "react-router-dom"
 
 function BoutonsNavigation() {
     return (
-        <nav className="fixed bottom-0 left-0 right-0 bg-[#05CDC2] flex justify-around items-center py-3 sm:hidden">
+        <nav className="fixed bottom-0 left-0 right-0 bg-[#C4E7E5] flex justify-around items-center py-3 sm:hidden">
             <Link to="/accueil">
                 <img src={home} alt="icone-home" />
 
