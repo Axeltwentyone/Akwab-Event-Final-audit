@@ -16,7 +16,7 @@ RUN composer dump-autoload --optimize --classmap-authoritative
 FROM php:8.2-fpm-alpine
 
 RUN apk add --no-cache \
-        bash curl unzip shadow \
+        bash curl unzip shadow nginx supervisor gettext \
         $PHPIZE_DEPS \
     && docker-php-ext-install pdo pdo_mysql bcmath opcache \
     && pecl install redis \
@@ -50,12 +50,23 @@ WORKDIR /var/www/api
 COPY --chown=www-data:www-data . .
 COPY --from=composer-deps --chown=www-data:www-data /app/vendor ./vendor
 
+# Config nginx (template avec variable $PORT substituée au démarrage)
+COPY docker/nginx/prod.conf.template /etc/nginx/http.d/default.conf.template
+
+# Config supervisord (lance nginx + php-fpm ensemble)
+COPY docker/supervisord.conf /etc/supervisord.conf
+
+# Script de démarrage : injecte le port Railway dans la conf nginx, puis lance supervisord
+COPY docker/start.sh /usr/local/bin/start.sh
+
 RUN php artisan config:cache \
     && php artisan route:cache \
     && php artisan view:cache \
-    && chmod -R 775 storage bootstrap/cache
+    && chmod -R 775 storage bootstrap/cache \
+    && chmod +x /usr/local/bin/start.sh \
+    && mkdir -p /var/log/supervisor \
+    && chown -R www-data:www-data /var/log/supervisor /run
 
-USER www-data
+EXPOSE 8080
 
-EXPOSE 9000
-CMD ["php-fpm"]
+CMD ["/usr/local/bin/start.sh"]
