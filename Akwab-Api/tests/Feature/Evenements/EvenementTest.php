@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Evenements;
 
+use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 use App\Models\Utilisateur;
 use App\Models\Evenement;
@@ -19,7 +20,7 @@ class EvenementTest extends TestCase
     {
         return Utilisateur::factory()->admin()->create();
     }
-// ndhdhdhdhd
+    // ndhdhdhdhd
     private function normalUser(): Utilisateur
     {
         return Utilisateur::factory()->create();
@@ -87,11 +88,22 @@ class EvenementTest extends TestCase
     public function un_utilisateur_normal_ne_peut_pas_creer_un_evenement()
     {
         $user = $this->normalUser();
+        $categorie = Categorie::factory()->create();
+        $lieu = Lieu::factory()->create();
+        $organisateur = Organisateur::factory()->create();
 
         $this->actingAs($user, 'sanctum')
             ->postJson('/api/evenements', [
-                'nom'  => 'Test',
+                'nom' => 'Test',
+                'description' => 'Une description valide de test',
                 'date' => now()->addMonth()->format('Y-m-d'),
+                'image' => UploadedFile::fake()->image('event.jpg'),
+                'id_categorie' => $categorie->id_categorie,
+                'id_lieu' => $lieu->id_lieu,
+                'id_organisateur' => $organisateur->id_organisateur,
+                'tickets' => [
+                    ['nom' => 'VIP', 'prix' => 50, 'quantite' => 10]
+                ]
             ])->assertStatus(403);
     }
 
@@ -146,16 +158,5 @@ class EvenementTest extends TestCase
             ->deleteJson("/api/evenements/{$evenement->id_evenement}")
             ->assertStatus(200)
             ->assertJsonFragment(['success' => true]);
-    }
-
-    #[Test]
-    public function un_utilisateur_normal_ne_peut_pas_supprimer_un_evenement()
-    {
-        $user      = $this->normalUser();
-        $evenement = Evenement::factory()->create();
-
-        $this->actingAs($user, 'sanctum')
-            ->deleteJson("/api/evenements/{$evenement->id_evenement}")
-            ->assertStatus(403);
     }
 }

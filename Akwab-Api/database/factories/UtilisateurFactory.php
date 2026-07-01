@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Role;
 use App\Models\Utilisateur;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -33,12 +34,7 @@ class UtilisateurFactory extends Factory
             'email'   => $this->faker->unique()->safeEmail(),
             'telephone' => $this->faker->phoneNumber(),
             'mot_de_passe' => bcrypt('password'),
-            'id_role' => Role::inRandomOrder()->first()->id_role ?? Role::factory()->create()->id_role,
+            'id_role' => 2,
         ];
-    }
-
-    public function admin(): static
-    {
-        return $this->state(['id_role' => 1]);
     }
 }
