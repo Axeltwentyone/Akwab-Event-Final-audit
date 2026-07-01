@@ -7,7 +7,7 @@ import ForgotPassword from "./Authentification/ForgotPassword";
 import UtilisateurLayout from "./Utilisateurs/UtilisateurLayout";
 import PrivateRoute from "./Authentification/PrivateRoute";
 
-import AdminLayout from "./Admin/adminLayout";
+import AdminLayout from "./Admin/AdminLayout";
 import Dashboard from "./Admin/dashboard";
 
 import ListUtilisateur from "./Admin/Utilisateurs/ListUtilisateur";
