@@ -4,12 +4,8 @@ namespace Database\Factories;
 
 use App\Models\Utilisateur;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Role;
+use Illuminate\Support\Facades\Hash;
 
-
-/**
- * @extends Factory<Utilisateur>
- */
 class UtilisateurFactory extends Factory
 {
     /**
@@ -39,5 +35,10 @@ class UtilisateurFactory extends Factory
             'mot_de_passe' => bcrypt('password'),
             'id_role' => Role::inRandomOrder()->first()->id_role ?? Role::factory()->create()->id_role,
         ];
+    }
+
+    public function admin(): static
+    {
+        return $this->state(['id_role' => 1]);
     }
 }
