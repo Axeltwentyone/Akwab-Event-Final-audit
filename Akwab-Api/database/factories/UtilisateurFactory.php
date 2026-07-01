@@ -17,6 +17,18 @@ class UtilisateurFactory extends Factory
      *
      * @return array<string, mixed>
      */
+
+    public function admin(): static
+    {
+        return $this->state(function () {
+            $role = Role::where('libelle', 'admin')->first()
+                ?? Role::where('libelle', 'Admin')->first()
+                ?? Role::first();
+
+            return ['id_role' => $role->id_role];
+        });
+    }
+
     public function definition(): array
     {
         return [
@@ -25,7 +37,7 @@ class UtilisateurFactory extends Factory
             'email'   => $this->faker->unique()->safeEmail(),
             'telephone' => $this->faker->phoneNumber(),
             'mot_de_passe' => bcrypt('password'),
-            'id_role' => Role::inRandomOrder()->first()->id_role,
+            'id_role' => Role::inRandomOrder()->first()->id_role ?? Role::factory()->create()->id_role,
         ];
     }
 }

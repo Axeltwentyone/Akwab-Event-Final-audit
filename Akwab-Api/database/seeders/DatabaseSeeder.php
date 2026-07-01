@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 
-        Role::create(['libelle' => 'Administrateur']);
+        Role::create(['libelle' => 'admin']);
         Role::create(['libelle' => 'Utilisateur']);
         Lieu::factory(10)->create();
         Categorie::factory(5)->create();
