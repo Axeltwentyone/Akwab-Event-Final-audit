@@ -15,7 +15,8 @@ php artisan view:clear
 
 php artisan migrate --force
 
-
+php artisan db:seed --class=RoleSeeder --force
+php artisan db:seed --class=SuperAdminSeeder --force
 
 php artisan config:cache
 php artisan route:cache
