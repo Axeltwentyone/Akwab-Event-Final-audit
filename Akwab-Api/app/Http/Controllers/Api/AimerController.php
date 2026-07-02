@@ -59,7 +59,7 @@ class AimerController extends Controller
 
         return response()->json([
             'success' => true,
-            'data'    => $evenements,
+            'data'    => EvenementResource::collection($evenements),
         ]);
     }
 
