@@ -75,12 +75,23 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 // test
-Route::get('/debug-log', function () {
-    $path = storage_path('logs/laravel.log');
-    if (!file_exists($path)) {
-        return response('Fichier laravel.log introuvable.', 404);
+Route::post('/debug-login', function (\Illuminate\Http\Request $request) {
+    try {
+        // Remplace ceci par un appel à ta vraie logique de login,
+        // ou laisse ce test minimal pour voir si la DB répond
+        $user = \App\Models\User::where('email', $request->input('email'))->first();
+
+        return response()->json([
+            'step' => 'user_lookup',
+            'user_found' => $user ? true : false,
+        ]);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'error' => true,
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => explode("\n", $e->getTraceAsString()),
+        ], 500);
     }
-    $lines = file($path);
-    $lastLines = array_slice($lines, -200);
-    return response('<pre>' . htmlspecialchars(implode('', $lastLines)) . '</pre>');
 });
