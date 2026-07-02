@@ -91,18 +91,28 @@ Route::post('/debug-evenement', function (\Illuminate\Http\Request $request) {
 Route::post('/debug-evenement-full', function (\Illuminate\Http\Request $request) {
     try {
         $evenement = \App\Models\Evenement::create($request->only([
-            'nom', 'description', 'date', 'id_lieu', 'id_categorie', 'id_organisateur', 'image'
+            'nom', 'description', 'date', 'id_lieu', 'id_categorie', 'id_organisateur'
         ]));
 
         foreach ($request->input('tickets', []) as $ticket) {
-            $evenement->typesTickets()->create([
+            $typeTicket = \App\Models\Type_ticket::create([
                 'libelle' => $ticket['libelle'] ?? null,
                 'prix_ticket' => $ticket['prix_ticket'] ?? null,
-                'quantite_type_ticket' => $ticket['quantite_type_ticket'] ?? null,
+            ]);
+
+            $quantite = $ticket['quantite_type_ticket'] ?? 0;
+
+            $evenement->types_tickets()->attach($typeTicket->id_type_ticket, [
+                'total_ticket_evenement' => $quantite,
+                'quantite_ticket_restante' => $quantite,
+                'quantite_type_ticket' => $quantite,
             ]);
         }
 
-        return response()->json(['success' => true, 'evenement' => $evenement->load('typesTickets')]);
+        return response()->json([
+            'success' => true,
+            'evenement' => $evenement->load('types_tickets'),
+        ]);
     } catch (\Throwable $e) {
         return response()->json([
             'error' => true,
