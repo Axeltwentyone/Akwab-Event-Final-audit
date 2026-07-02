@@ -38,8 +38,26 @@ jobs:
           extensions: mbstring, bcmath, pdo_mysql, redis, gd
           coverage: none
 
-      - name: Copy .env
-        run: cp .env.testing .env
+      - name: Create .env
+        run: |
+          cat > .env << 'EOF'
+          APP_NAME=Laravel
+          APP_ENV=testing
+          APP_KEY=
+          APP_DEBUG=true
+          APP_URL=http://localhost
+
+          DB_CONNECTION=mysql
+          DB_HOST=127.0.0.1
+          DB_PORT=3306
+          DB_DATABASE=laravel_test
+          DB_USERNAME=root
+          DB_PASSWORD=root
+
+          CACHE_DRIVER=array
+          SESSION_DRIVER=array
+          QUEUE_CONNECTION=sync
+          EOF
 
       - name: Install Composer dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
@@ -55,23 +73,9 @@ jobs:
           done
 
       - name: Run migrations
-        env:
-          DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_DATABASE: laravel_test
-          DB_USERNAME: root
-          DB_PASSWORD: root
         run: php artisan migrate --force
 
       - name: Run tests
-        env:
-          DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_DATABASE: laravel_test
-          DB_USERNAME: root
-          DB_PASSWORD: root
         run: php artisan test
 
   cypress-tests:
@@ -103,9 +107,27 @@ jobs:
           php-version: '8.2'
           extensions: mbstring, bcmath, pdo_mysql, redis, gd
 
-      - name: Copy .env (api)
+      - name: Create .env (api)
         working-directory: Akwab-Api
-        run: cp .env.testing .env
+        run: |
+          cat > .env << 'EOF'
+          APP_NAME=Laravel
+          APP_ENV=testing
+          APP_KEY=
+          APP_DEBUG=true
+          APP_URL=http://localhost
+
+          DB_CONNECTION=mysql
+          DB_HOST=127.0.0.1
+          DB_PORT=3306
+          DB_DATABASE=laravel_test
+          DB_USERNAME=root
+          DB_PASSWORD=root
+
+          CACHE_DRIVER=array
+          SESSION_DRIVER=array
+          QUEUE_CONNECTION=sync
+          EOF
 
       - name: Install Composer dependencies
         working-directory: Akwab-Api
@@ -124,24 +146,10 @@ jobs:
 
       - name: Run migrations + seed
         working-directory: Akwab-Api
-        env:
-          DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_DATABASE: laravel_test
-          DB_USERNAME: root
-          DB_PASSWORD: root
         run: php artisan migrate --force --seed
 
       - name: Start Laravel server
         working-directory: Akwab-Api
-        env:
-          DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_DATABASE: laravel_test
-          DB_USERNAME: root
-          DB_PASSWORD: root
         run: php artisan serve --port=8000 &
 
       # --- Frontend ---
