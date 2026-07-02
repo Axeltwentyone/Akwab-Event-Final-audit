@@ -73,3 +73,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/categories/{id}', [CategorieController::class, 'destroy']);
     });
 });
+
+// test
+Route::get('/debug-log', function () {
+    $path = storage_path('logs/laravel.log');
+    if (!file_exists($path)) {
+        return response('Fichier laravel.log introuvable.', 404);
+    }
+    $lines = file($path);
+    $lastLines = array_slice($lines, -200);
+    return response('<pre>' . htmlspecialchars(implode('', $lastLines)) . '</pre>');
+});
