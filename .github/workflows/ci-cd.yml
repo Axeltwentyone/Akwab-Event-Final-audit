@@ -93,6 +93,7 @@ jobs:
       - name: Build front image
         run: |
           docker build \
+            -f Akwab-Front/dockerfile.prod \
             --build-arg VITE_API_URL=https://placeholder-check.local \
             -t akwab-front-check:latest ./Akwab-Front
 
