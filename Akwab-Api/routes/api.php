@@ -73,3 +73,18 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/categories/{id}', [CategorieController::class, 'destroy']);
     });
 });
+
+
+Route::post('/debug-evenement', function (\Illuminate\Http\Request $request) {
+    try {
+        $evenement = \App\Models\Evenement::create($request->all());
+        return response()->json(['success' => true, 'evenement' => $evenement]);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'error' => true,
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+        ], 500);
+    }
+});
