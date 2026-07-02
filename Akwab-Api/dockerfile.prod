@@ -56,7 +56,17 @@ COPY docker/nginx/prod.conf.template /etc/nginx/http.d/default.conf.template
 # Config supervisord (lance nginx + php-fpm ensemble)
 COPY docker/supervisord.conf /etc/supervisord.conf
 
-# Script de démarrage : injecte le port Railway dans la conf nginx, puis lance supervisord
+# Script de démarrage : injecte le port Railway dans la conf nginx,
+# régénère les caches Laravel avec les vraies variables d'env, puis
+# lance supervisord (nginx + php-fpm)
 COPY docker/start.sh /usr/local/bin/start.sh
 
+RUN mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache/data storage/logs \
+    && chmod -R 775 storage bootstrap/cache \
+    && chmod +x /usr/local/bin/start.sh \
+    && mkdir -p /var/log/supervisor \
+    && chown -R www-data:www-data /var/log/supervisor /run
 
+EXPOSE 8080
+
+CMD ["/usr/local/bin/start.sh"]
