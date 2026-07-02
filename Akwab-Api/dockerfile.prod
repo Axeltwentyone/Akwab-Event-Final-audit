@@ -59,14 +59,4 @@ COPY docker/supervisord.conf /etc/supervisord.conf
 # Script de démarrage : injecte le port Railway dans la conf nginx, puis lance supervisord
 COPY docker/start.sh /usr/local/bin/start.sh
 
-RUN php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache \
-    && chmod -R 775 storage bootstrap/cache \
-    && chmod +x /usr/local/bin/start.sh \
-    && mkdir -p /var/log/supervisor \
-    && chown -R www-data:www-data /var/log/supervisor /run
 
-EXPOSE 8080
-
-CMD ["/usr/local/bin/start.sh"]
