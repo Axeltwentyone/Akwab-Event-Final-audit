@@ -88,3 +88,27 @@ Route::post('/debug-evenement', function (\Illuminate\Http\Request $request) {
         ], 500);
     }
 });
+Route::post('/debug-evenement-full', function (\Illuminate\Http\Request $request) {
+    try {
+        $evenement = \App\Models\Evenement::create($request->only([
+            'nom', 'description', 'date', 'id_lieu', 'id_categorie', 'id_organisateur', 'image'
+        ]));
+
+        foreach ($request->input('tickets', []) as $ticket) {
+            $evenement->typesTickets()->create([
+                'libelle' => $ticket['libelle'] ?? null,
+                'prix_ticket' => $ticket['prix_ticket'] ?? null,
+                'quantite_type_ticket' => $ticket['quantite_type_ticket'] ?? null,
+            ]);
+        }
+
+        return response()->json(['success' => true, 'evenement' => $evenement->load('typesTickets')]);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'error' => true,
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+        ], 500);
+    }
+});
