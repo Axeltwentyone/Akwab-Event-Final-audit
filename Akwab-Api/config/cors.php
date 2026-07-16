@@ -20,10 +20,11 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
-        'http://localhost:5173',
-        'http://localhost:5174',
-        'https://astonishing-compassion-production-748b.up.railway.app',
-    ],
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'https://astonishing-compassion-production-748b.up.railway.app',
+    'https://akwab-event-final-audit.vercel.app',
+],
 
     'allowed_origins_patterns' => [],
 
