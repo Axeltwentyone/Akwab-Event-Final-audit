@@ -18,4 +18,5 @@ Akwab-Api/bootstrap/cache/*.php
 .vscode
 
 # Tests
-coverage
+coveragezap-report.html
+zap.yaml
