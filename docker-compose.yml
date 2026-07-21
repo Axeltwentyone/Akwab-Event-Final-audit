@@ -38,7 +38,7 @@ services:
   api:
     build:
       context: ./Akwab-Api
-      dockerfile: Dockerfile          
+      dockerfile: dockerfile.prod     
     container_name: akwab-api-prod
     restart: always
     env_file:
@@ -47,6 +47,9 @@ services:
       APP_ENV: production
       APP_DEBUG: "false"
       DB_HOST: db
+    ports:
+      - "8090:8080"
+
 
     volumes:
       - api_storage:/var/www/api/storage 
