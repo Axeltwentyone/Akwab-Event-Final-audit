@@ -120,9 +120,9 @@ class EvenementController extends Controller
      */
     public function update(UpdateEvenementRequest $request, string $id)
     {
-        Log::info('DEBUG UPDATE', $request->all());
         $evenement = Evenement::findOrFail($id);
         $data = $request->validated();
+
         if ($request->hasFile('image')) {
             if ($evenement->image) {
                 Storage::disk('public')->delete($evenement->image);
@@ -141,7 +141,6 @@ class EvenementController extends Controller
             $evenement->update(collect($data)->except('tickets')->toArray());
 
             if (!empty($data['tickets'])) {
-                $totalTickets = collect($data['tickets'])->sum('quantite_type_ticket');
                 $idsEnvoyes = [];
 
                 foreach ($data['tickets'] as $ticket) {
@@ -153,15 +152,26 @@ class EvenementController extends Controller
                             'prix_ticket' => $ticket['prix_ticket'],
                         ]);
 
+                        // On lit l'état actuel du stock pour ce type de ticket
+                        $pivotActuel = $evenement->types_tickets()
+                            ->where('types_tickets.id_type_ticket', $ticket['id_type_ticket'])
+                            ->first()->pivot;
+
+                        // Tickets déjà vendus = total d'avant - restant d'avant
+                        $dejaVendus = $pivotActuel->total_ticket_evenement - $pivotActuel->quantite_ticket_restante;
+
+                        // Nouveau restant = nouveau total - déjà vendus (jamais négatif)
+                        $nouveauRestant = max(0, $ticket['quantite_type_ticket'] - $dejaVendus);
+
                         $evenement->types_tickets()->updateExistingPivot($ticket['id_type_ticket'], [
                             'total_ticket_evenement'   => $ticket['quantite_type_ticket'],
                             'quantite_type_ticket'     => $ticket['quantite_type_ticket'],
-                            'quantite_ticket_restante' => $ticket['quantite_type_ticket'],
+                            'quantite_ticket_restante' => $nouveauRestant,
                         ]);
 
                         $idsEnvoyes[] = $ticket['id_type_ticket'];
                     } else {
-                        // Nouveau ticket → create + attach
+                        // Nouveau ticket → create + attach (rien vendu, restant = total)
                         $typeTicket = Type_ticket::create([
                             'libelle'     => $ticket['libelle'],
                             'prix_ticket' => $ticket['prix_ticket'],
@@ -192,7 +202,6 @@ class EvenementController extends Controller
             ]);
         });
     }
-
     /**
      * Remove the specified resource from storage.
      */
