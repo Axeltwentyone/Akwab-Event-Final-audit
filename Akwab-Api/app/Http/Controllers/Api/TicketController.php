@@ -12,6 +12,8 @@ use App\Models\Ticket;
 use App\Models\Type_ticket;
 use App\Models\Evenement;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 
 class TicketController extends Controller
@@ -64,9 +66,6 @@ class TicketController extends Controller
      */
     public function store(StoreTicketRequest $request)
     {
-        $prixTotal   = 0;
-        $nombreTotal = 0;
-
         $evenement = Evenement::find($request->id_evenement);
 
         if (!$evenement) {
@@ -76,60 +75,70 @@ class TicketController extends Controller
             ], 404);
         }
 
-        foreach ($request->tickets as $item) {
-            $typeTicket = $evenement->types_tickets()
-                ->where('types_tickets.id_type_ticket', $item['id_type_ticket'])
-                ->first();
+        // On enveloppe tout dans une transaction :
+        // soit tout réussit, soit rien n'est enregistré.
+        $ticket = DB::transaction(function () use ($request, $evenement) {
 
-            if (!$typeTicket) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Ce type de ticket n\'est pas disponible pour cet événement',
-                ], 400);
+            $prixTotal   = 0;
+            $nombreTotal = 0;
+
+            foreach ($request->tickets as $item) {
+                // lockForUpdate : on verrouille la ligne du stock
+                // pour empêcher deux achats en même temps sur le même ticket.
+                $typeTicket = $evenement->types_tickets()
+                    ->where('types_tickets.id_type_ticket', $item['id_type_ticket'])
+                    ->lockForUpdate()
+                    ->first();
+
+                if (!$typeTicket) {
+                    abort(400, 'Ce type de ticket n\'est pas disponible pour cet événement');
+                }
+
+                if ($typeTicket->pivot->quantite_ticket_restante < $item['nombre_ticket_pris']) {
+                    abort(400, 'Stock insuffisant pour le type : ' . $typeTicket->libelle);
+                }
+
+                $prixTotal   += $item['nombre_ticket_pris'] * $typeTicket->prix_ticket;
+                $nombreTotal += $item['nombre_ticket_pris'];
             }
 
-            if ($typeTicket->pivot->quantite_ticket_restante < $item['nombre_ticket_pris']) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Stock insuffisant pour le type : ' . $typeTicket->libelle,
-                ], 400);
+            // On crée le ticket
+            $ticket = Ticket::create([
+                'id_utilisateur'     => $request->user()->id_utilisateur,
+                'id_evenement'       => $request->id_evenement,
+                'id_type_ticket'     => $request->tickets[0]['id_type_ticket'],
+                'numero_ticket'      => 'TK-N°' . strtoupper(uniqid()),
+                'date_reservation'   => now(),
+                'nombre_ticket_pris' => $nombreTotal,
+                'prix_total'         => $prixTotal,
+            ]);
+
+            // On décrémente le stock, dans la même transaction
+            foreach ($request->tickets as $item) {
+                $typeTicket = $evenement->types_tickets()
+                    ->where('types_tickets.id_type_ticket', $item['id_type_ticket'])
+                    ->first();
+
+                $evenement->types_tickets()->updateExistingPivot(
+                    $item['id_type_ticket'],
+                    [
+                        'quantite_ticket_restante' => $typeTicket->pivot->quantite_ticket_restante - $item['nombre_ticket_pris'],
+                    ]
+                );
             }
 
-            $prixTotal   += $item['nombre_ticket_pris'] * $typeTicket->prix_ticket;
-            $nombreTotal += $item['nombre_ticket_pris'];
-        }
-
-
-        $ticket = Ticket::create([
-            'id_utilisateur'     => $request->user()->id_utilisateur,
-            'id_evenement'       => $request->id_evenement,
-            'id_type_ticket'     => $request->tickets[0]['id_type_ticket'],
-            'numero_ticket'      => 'TK-N°' . strtoupper(uniqid()),
-            'date_reservation'   => now(),
-            'nombre_ticket_pris' => $nombreTotal,
-            'prix_total'         => $prixTotal,
-
-        ]);
+            return $ticket;
+        });
 
         $ticket->load(['evenement', 'typeTicket']);
 
-        $user = $request->user();
-
-        Mail::to($user->email)
-            ->send(new TicketPaymentConfirmation($ticket));
-
-
-        foreach ($request->tickets as $item) {
-            $typeTicket = $evenement->types_tickets()
-                ->where('types_tickets.id_type_ticket', $item['id_type_ticket'])
-                ->first();
-
-            $evenement->types_tickets()->updateExistingPivot(
-                $item['id_type_ticket'],
-                [
-                    'quantite_ticket_restante' => $typeTicket->pivot->quantite_ticket_restante - $item['nombre_ticket_pris'],
-                ]
-            );
+        // L'email est envoyé APRÈS la transaction.
+        // S'il échoue, l'achat reste valide : on ne fait que noter l'erreur.
+        try {
+            Mail::to($request->user()->email)
+                ->send(new TicketPaymentConfirmation($ticket));
+        } catch (\Throwable $e) {
+            Log::warning('Email de confirmation non envoyé : ' . $e->getMessage());
         }
 
         return response()->json([
