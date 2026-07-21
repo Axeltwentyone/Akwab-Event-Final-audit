@@ -75,7 +75,7 @@ function App() {
         <Route path="/profil/modifier" element={<UpdateProfil />} />
 
         {/* Routes admin */}
-        <Route element={<PrivateRoute />}>
+       <Route element={<PrivateRoute adminOnly={true} />}>
           <Route path="/Admin" element={<AdminLayout />}>
             <Route index path="Dashboard" element={<Dashboard />} />
 
