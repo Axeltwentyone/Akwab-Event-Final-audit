@@ -187,7 +187,7 @@ class TicketController extends Controller
 
             foreach ($request->tickets as $item) {
                 $typeTicket   = Type_ticket::find($item['id_type_ticket']);
-                $prixTotal   += $item['nombre_ticket_pris'] * $typeTicket->prix;
+                $prixTotal   += $item['nombre_ticket_pris'] * $typeTicket->prix_ticket;
                 $nombreTotal += $item['nombre_ticket_pris'];
             }
 
