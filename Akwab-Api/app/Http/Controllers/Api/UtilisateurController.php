@@ -66,7 +66,7 @@ class UtilisateurController extends Controller
         }
 
         $utilisateur->update(
-            $request->safe()->except('mot_de_passe_confirmation')
+            $request->safe()->only(['nom', 'prenoms', 'email', 'telephone', 'mot_de_passe'])
         );
 
         return response()->json([
