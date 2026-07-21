@@ -49,7 +49,7 @@ class Ticket extends Model
     public function typeTicket()
     {
         return $this->belongsTo(
-            Type_Ticket::class,
+            Type_ticket::class,
             'id_type_ticket',
             'id_type_ticket'
         );
