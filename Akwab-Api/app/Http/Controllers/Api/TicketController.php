@@ -229,7 +229,20 @@ class TicketController extends Controller
             ], 404);
         }
 
-        $ticket->delete();
+        DB::transaction(function () use ($ticket) {
+            // On récupère la ligne de stock du type de ticket concerné
+            $stock = EvenementTypeTicket::where('id_evenement', $ticket->id_evenement)
+                ->where('id_type_ticket', $ticket->id_type_ticket)
+                ->first();
+
+            // On rend les places au stock (l'inverse de l'achat)
+            if ($stock) {
+                $stock->quantite_ticket_restante += $ticket->nombre_ticket_pris;
+                $stock->save();
+            }
+
+            $ticket->delete();
+        });
 
         return response()->json([
             'success' => true,
