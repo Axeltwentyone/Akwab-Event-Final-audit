@@ -100,10 +100,11 @@ export default function Login() {
       <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
         {/* Email */}
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+          <label htmlFor="email" className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
             Email
           </label>
           <input
+            id="email"
             type="email"
             placeholder="votre@email.com"
             value={email}
@@ -115,11 +116,12 @@ export default function Login() {
 
         {/* Mot de passe */}
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+          <label htmlFor="password" className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
             Mot de passe
           </label>
           <div className="relative">
             <input
+              id="password"
               type={showPassword ? "text" : "password"}
               placeholder="••••••••"
               value={motDePasse}
