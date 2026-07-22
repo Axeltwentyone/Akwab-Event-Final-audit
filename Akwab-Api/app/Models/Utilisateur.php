@@ -46,7 +46,7 @@ class Utilisateur extends Authenticatable implements CanResetPasswordContract
 
     public function sendPasswordResetNotification($token)
     {
-        $url = "http://localhost:5173/reset-password?token={$token}&email={$this->email}";
+        $url = config('app.frontend_url') . "/reset-password?token={$token}&email={$this->email}";
         $this->notify(new \App\Notifications\CustomResetPassword($url));
     }
 
