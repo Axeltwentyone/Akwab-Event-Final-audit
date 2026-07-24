@@ -22,7 +22,7 @@ return [
     'allowed_origins' => [
     'http://localhost:5173',
     'http://localhost:5174',
-    'https://astonishing-compassion-production-748b.up.railway.app',
+    'https://akwab-event-final-audit-production-d3a4.up.railway.app',
     'https://akwab-event-final-audit.vercel.app',
 ],
 
