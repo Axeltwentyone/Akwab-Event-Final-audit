@@ -1,0 +1,80 @@
+# Pile de supervision système — CPU, RAM, réseau des conteneurs
+# Lancement :  docker compose -f docker-compose-monitoring.yml up -d
+# Grafana     : http://localhost:3001   (admin / admin)
+# Prometheus  : http://localhost:9090
+# cAdvisor    : http://localhost:8085
+
+services:
+  # Collecte les métriques CPU / RAM / réseau de chaque conteneur Docker
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    container_name: akwab-cadvisor
+    ports:
+      - "8085:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /Users/a17/.docker/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
+
+  # Metriques du systeme hote (CPU, RAM, disque, reseau) - fiable sur Mac
+  node-exporter:
+    image: prom/node-exporter:v1.8.1
+    container_name: akwab-node-exporter
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/rootfs'
+    restart: unless-stopped
+
+  # Stocke les métriques dans le temps et évalue les seuils d'alerte
+  prometheus:
+    image: prom/prometheus:v2.53.0
+    container_name: akwab-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./alert-rules.yml:/etc/prometheus/alert-rules.yml:ro
+      - prometheus_data:/prometheus
+    restart: unless-stopped
+    depends_on:
+      - cadvisor
+      - node-exporter
+
+  # Affiche les tableaux de bord (CPU, RAM, réseau)
+  grafana:
+    image: grafana/grafana:11.1.0
+    container_name: akwab-grafana
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+
+  # Envoie les alertes Prometheus vers Slack
+  alertmanager:
+    image: prom/alertmanager:v0.27.0
+    container_name: akwab-alertmanager
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+    restart: unless-stopped
+
+volumes:
+  prometheus_data:
+  grafana_data:

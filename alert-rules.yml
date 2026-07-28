@@ -1,0 +1,43 @@
+# Seuils d'alerte sur les ressources système des conteneurs
+groups:
+  - name: ressources_conteneurs
+    rules:
+      # CPU : un conteneur qui consomme plus de 80 % pendant 2 minutes
+      - alert: CpuConteneurEleve
+        expr: rate(container_cpu_usage_seconds_total{name=~"akwab.*"}[2m]) * 100 > 80
+        for: 2m
+        labels:
+          severite: avertissement
+        annotations:
+          resume: "CPU élevé sur {{ $labels.name }}"
+          description: "Le conteneur {{ $labels.name }} dépasse 80 % de CPU depuis 2 minutes."
+
+      # RAM : un conteneur qui dépasse 85 % de sa limite mémoire
+      - alert: MemoireConteneurElevee
+        expr: (container_memory_usage_bytes{name=~"akwab.*"} / container_spec_memory_limit_bytes{name=~"akwab.*"}) * 100 > 85
+        for: 2m
+        labels:
+          severite: critique
+        annotations:
+          resume: "Mémoire élevée sur {{ $labels.name }}"
+          description: "Le conteneur {{ $labels.name }} dépasse 85 % de sa mémoire allouée."
+
+      # Disponibilité : un conteneur qui ne répond plus
+      - alert: ConteneurIndisponible
+        expr: up{job="cadvisor"} == 0
+        for: 1m
+        labels:
+          severite: critique
+        annotations:
+          resume: "Supervision indisponible"
+          description: "La collecte des métriques ne répond plus depuis 1 minute."
+
+      # CPU système : le CPU de la machine hôte dépasse 80 % (via node-exporter, fiable sur Mac)
+      - alert: CpuSystemeEleve
+        expr: 100 - (avg(rate(node_cpu_seconds_total{mode="idle"}[2m])) * 100) > 80
+        for: 1m
+        labels:
+          severite: avertissement
+        annotations:
+          resume: "CPU système élevé"
+          description: "Le CPU de la machine hôte dépasse 80 % depuis 1 minute."
